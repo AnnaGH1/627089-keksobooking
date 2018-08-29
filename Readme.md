@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна Беккаревич](https://up.htmlacademy.ru/javascript/15/user/627089).
-* Наставник: `Неизвестно`.
+* Наставник: [Артём Альтигин](https://htmlacademy.ru/profile/artem).
 
 ---
 
