@@ -1,5 +1,6 @@
 'use strict';
 
+// postings data
 var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -8,67 +9,74 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 
-var numberOfUsers = 3;
+var postingsNumber = 8;
 
-// avatar paths array
-var avatarsPaths = [];
+// new avatar and avatar paths array variables
+var newPath;
+var avatarPaths = [];
 
-// creates avatar path and updates avatar paths array
+// creates one avatar path
 var genarateAvatarPath = function (avatarNumber) {
-  var newPath = 'img/avatar/user0' + avatarNumber + '.png';
-  avatarsPaths.push(newPath);
-  return avatarsPaths;
+  newPath = 'img/avatar/user' + 0 + avatarNumber + '.png';
+  return newPath;
 }
 
-for (var i = 1; i <= numberOfUsers; i++) {
-  genarateAvatarPath(i);
+// creates an array of avatar paths
+for (var i = 1; i <= postingsNumber; i++) {
+  avatarPaths.push(genarateAvatarPath(i));
 }
 
-avatarsPaths;
-
-// getting a random integer between two values, inclusive
+// gets a random integer between two values, inclusive
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var randomPrice = getRandomIntInclusive (1000, 1000000);
-var randomRooms = getRandomIntInclusive (1, 5);
-var randomGuests = getRandomIntInclusive (1, 6);
-
-// arguments are random, used for testing, and will be changed
-var randomX = getRandomIntInclusive(100, 800);
-var randomY = getRandomIntInclusive(100, 800);
-
+// new posting and postings array variables
 var newPosting;
+var postings = [];
 
-// creates new posting
-var generatePosting = function (param1, param2, param4, param5, param6, param7, param8, param9, param10, param12, param13, param14) {
+// function parameters and corresponding arguments
+// param1 - avatarPaths
+// param2 - TITLE
+// param5 - TYPE
+// param6 - CHECKIN
+// param7 - CHECKOUT
+// param8 - FEATURES
+// param9 - PHOTOS
+
+// creates one posting
+var generatePosting = function (param1, param2, param5, param6, param7, param9) {
   newPosting = {
     author: {
+      // should not repeat - to be corrected
       avatar: param1[0]
     },
     offer: {
-      title: param2[0],
-      address: '',
-      price: param4,
-      type: param5[0],
-      rooms: param6,
-      guests: param7,
-      checkin: param8[0],
-      checkout: param9[0],
-      features: param10[0],
+      // should not repeat - to be corrected
+      title: param2[getRandomIntInclusive(0, 7)],
+      // address: '',
+      price: getRandomIntInclusive (1000, 1000000),
+      type: param5[getRandomIntInclusive(0, 3)],
+      rooms: getRandomIntInclusive (1, 5),
+      guests: getRandomIntInclusive (1, 10),
+      checkin: param6[getRandomIntInclusive (0, 2)],
+      checkout: param7[getRandomIntInclusive (0, 2)],
+    //   features: param8[0],
       description: '',
-      photos: param12
+      photos: param9
     },
     location: {
-      x: param13,
-      y: param14
+      // arguments are random - to be corrected
+      x: getRandomIntInclusive(100, 800),
+      y: getRandomIntInclusive(100, 800)
     }
   }
   return newPosting;
+};
 
-}
-
-generatePosting(avatarsPaths, TITLE, randomPrice, TYPE, randomRooms, randomGuests, CHECKIN, CHECKOUT, FEATURES, PHOTOS, randomX, randomY);
+// creates an array of posting objects
+for (var i = 1; i <= postingsNumber; i++) {
+  postings.push(generatePosting(avatarPaths, TITLE, TYPE, CHECKIN, CHECKOUT, PHOTOS));
+};
