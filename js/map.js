@@ -23,14 +23,14 @@ var newAvatar;
 var avatars = [];
 
 // creates one avatar
-var genarateAvatar = function (avatarNumber) {
+var generateAvatar = function (avatarNumber) {
   newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
   return newAvatar;
 }
 
 // creates an array of avatars
 for (var i = 1; i <= postingsNumber; i++) {
-  avatars.push(genarateAvatar(i));
+  avatars.push(generateAvatar(i));
 }
 
 // gets a random integer between two values, inclusive
@@ -104,3 +104,51 @@ for (var j = 0; j < postings.length; j++) {
 
 // renders pins
 map.appendChild(fragment);
+
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var filters = document.querySelector('.map__filters-container');
+
+// creates one card based on the template
+var createCard = function (postingData) {
+
+  var typeRussian = function () {
+    var offerType = postingData.offer.type;
+    if (offerType === 'palace') {
+      return 'Дворец';
+    } else if (offerType === 'flat') {
+      return 'Квартира';
+    } else if (offerType === 'house') {
+      return 'Дом';
+    }
+    return 'Бунгало';
+  }
+
+  var guestTextVariation = function () {
+    var guestsNumber = postingData.offer.guests;
+    if (guestsNumber === 1) {
+      return guestsNumber + ' гостя';
+    }
+    return guestsNumber + ' гостей';
+  }
+
+  var cardElement = cardTemplate.cloneNode(true);
+  cardElement.querySelector('.popup__title').textContent = postingData.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = postingData.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = postingData.offer.price + '₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = typeRussian();
+  cardElement.querySelector('.popup__text--capacity').textContent = postingData.offer.rooms + ' комнаты для ' + guestTextVariation();
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + postingData.offer.checkin + ', выезд до ' + postingData.offer.checkout;
+  cardElement.querySelector('.popup__features').textContent = postingData.offer.features;
+  cardElement.querySelector('.popup__description').textContent = postingData.offer.description;
+  cardElement.querySelector('.popup__photos').querySelector('img').src = postingData.offer.photos[PHOTOS.length - 1];
+  cardElement.querySelector('.popup__avatar').src = postingData.author.avatar;
+
+  return cardElement;
+
+}
+
+for (var k = 0; k < postings.length; k++) {
+  fragment.appendChild(createCard(postings[k]));
+}
+
+map.insertBefore(fragment, filters);
