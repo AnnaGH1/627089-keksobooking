@@ -18,29 +18,43 @@ var minLocY = 130;
 var maxLocY = 630;
 var postingsNumber = 8;
 
-// new avatar and avatars array variables
-var newAvatar;
-var avatars = [];
-
-// creates one avatar
+/** @function generateAvatar - creates one avatar path
+*/
+/**
+* @param {number} avatarNumber - number from 1 to 8
+* @return {string}
+*/
 var generateAvatar = function (avatarNumber) {
-  newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
+  var newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
   return newAvatar;
 };
 
-// creates an array of avatars
+// Creates an array of avatars
+var avatars = [];
 for (var a = 1; a <= postingsNumber; a++) {
   avatars.push(generateAvatar(a));
 }
 
-// gets a random integer between two values, inclusive
+/**
+@function getRandomIntInclusive - Gets a random integer between two values, inclusive
+*/
+/**
+* @param {number} min - min value
+* @param {number} max - max value
+* @return {number}
+*/
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// selects random items from an array without duplicates
+/** @function - Selects random items from an array without duplicates
+*/
+/**
+* @param {string[]} array - array of string elements to choose from
+* @return {string[]} - array of randomly chosen elements
+*/
 var selectRandomNoRepeat = function (array) {
   var selection = [];
   array.forEach(function (item) {
@@ -52,6 +66,13 @@ var selectRandomNoRepeat = function (array) {
   return selection;
 };
 
+/** @function checkArrayContainsElement - checks if an array contains an elements
+*/
+/**
+* @param {(string[]|number[])} array - array of string or number elements
+* @param {(string|number)} element - element being checked
+* @return {boolean} - true if an array contains an element
+*/
 var checkArrayContainsElement = function (array, element) {
   for (var i = 0; i < array.length; i++) {
     if (array[i] === element) {
@@ -61,13 +82,22 @@ var checkArrayContainsElement = function (array, element) {
   return false;
 };
 
-var postings = [];
-
-// creates one posting and adds it to an array
+/** @function generatePosting - creates one posting
+*/
+/**
+* @param {string} avatar - avatar path
+* @param {string} title - posting title
+* @param {string[]} type - array of type names
+* @param {string[]} checkin - array of checkin times
+* @param {string[]} checkout - array of checkout times
+* @param {string[]} features - array of features
+* @param {string[]} photos - array of photo paths
+* @return {Object}
+*/
 var generatePosting = function (avatar, title, type, checkin, checkout, features, photos) {
   var locX = getRandomIntInclusive(minLocX, maxLocX);
   var locY = getRandomIntInclusive(minLocY, maxLocY);
-  var newPosting = {
+  var posting = {
     author: {
       avatar: avatar
     },
@@ -89,15 +119,16 @@ var generatePosting = function (avatar, title, type, checkin, checkout, features
       y: locY
     }
   };
-  postings.push(newPosting);
-  return postings;
+  return posting;
 };
 
-// creates an array of posting objects
+// Creates an array of posting objects
+var postings = [];
 for (var i = 0; i < postingsNumber; i++) {
-  generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS);
+  postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
 }
 
+// Creates varaiables and gets reference to elements used in pins rendering
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 var fragment = document.createDocumentFragment();
@@ -105,7 +136,12 @@ var fragment = document.createDocumentFragment();
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-// creates one pin based on the template
+/** @function createPin - creates one pin based on the template
+*/
+/**
+* @param {Object} postingData - an object of posting data
+* @return {Object} //?
+ */
 var createPin = function (postingData) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = postingData.location.x - 50 / 2 + 'px';
@@ -115,21 +151,34 @@ var createPin = function (postingData) {
   return pinElement;
 };
 
-// creates pins and appends them to fragment element
+
+// Creates pins and appends them to fragment element
 postings.forEach(function (item) {
   fragment.appendChild(createPin(item));
 });
 
-// renders pins
+// Renders pins
 mapPins.appendChild(fragment);
 
+
+// Creates variables and gets reference to elements used in pins rendering
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var filters = document.querySelector('.map__filters-container');
 
-// creates one card based on the template
+/** @function createCard - creates one card based on the template
+*/
+/**
+* @param {Object} postingData - data for one posting
+* @return {Object} //?
+*/
 var createCard = function (postingData) {
   var cardElement = cardTemplate.cloneNode(true);
 
+  /** @function typeRussian - replaces offer type in English by Russian translation
+  */
+  /**
+  * @return {string}
+  */
   var typeRussian = function () {
     var offerType = postingData.offer.type;
     if (offerType === 'palace') {
@@ -142,6 +191,11 @@ var createCard = function (postingData) {
     return 'Бунгало';
   };
 
+  /** @function guestTextVariation - word form correction in Russian
+  */
+  /**
+  * @return {string}
+  */
   var guestTextVariation = function () {
     var guestsNumber = postingData.offer.guests;
     if (guestsNumber === 1) {
@@ -150,6 +204,11 @@ var createCard = function (postingData) {
     return guestsNumber + ' гостей';
   };
 
+  /** @function fillFeaturesList - adds available features
+  */
+  /**
+  * @return {Object}//?
+  */
   var fillFeaturesList = function () {
     var featuresList = cardElement.querySelector('.popup__features');
     var wifi = featuresList.querySelector('.popup__feature--wifi');
@@ -193,6 +252,11 @@ var createCard = function (postingData) {
     return featuresList;
   };
 
+  /** @function fillPhotoGallery - adds more img tags to template and corresponding photo paths
+  */
+  /**
+  * @return {Object}//?
+  */
   var fillPhotoGallery = function () {
     var photoGallery = cardElement.querySelector('.popup__photos');
     var photoItem0 = photoGallery.querySelector('img');
@@ -222,8 +286,10 @@ var createCard = function (postingData) {
   return cardElement;
 };
 
+// Creates cards and appends them to fragment element
 postings.forEach(function (item) {
   fragment.appendChild(createCard(item));
 });
 
+// Renders cards
 map.insertBefore(fragment, filters);
