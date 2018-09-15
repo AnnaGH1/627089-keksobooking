@@ -12,8 +12,8 @@ var minRooms = 1;
 var maxRooms = 5;
 var minGuests = 1;
 var maxGuests = 6;
-var minLocX = 25;
-var maxLocX = document.body.clientWidth - 25;
+var minLocX = 100;
+var maxLocX = document.body.clientWidth - 100;
 var minLocY = 130;
 var maxLocY = 630;
 var postingsNumber = 8;
@@ -26,11 +26,11 @@ var avatars = [];
 var generateAvatar = function (avatarNumber) {
   newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
   return newAvatar;
-}
+};
 
 // creates an array of avatars
-for (var i = 1; i <= postingsNumber; i++) {
-  avatars.push(generateAvatar(i));
+for (var a = 1; a <= postingsNumber; a++) {
+  avatars.push(generateAvatar(a));
 }
 
 // gets a random integer between two values, inclusive
@@ -38,7 +38,28 @@ var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
+
+// selects random items from an array without duplicates
+var selectRandomNoRepeat = function (array) {
+  var selection = [];
+  array.forEach(function (item) {
+    var flag = Math.round(Math.random());
+    if (flag === 1) {
+      selection.push(item);
+    }
+  });
+  return selection;
+};
+
+var checkArrayContainsElement = function (array, element) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === element) {
+      return true;
+    }
+  }
+  return false;
+};
 
 var postings = [];
 
@@ -48,21 +69,18 @@ var generatePosting = function (avatar, title, type, checkin, checkout, features
   var locY = getRandomIntInclusive(minLocY, maxLocY);
   var newPosting = {
     author: {
-      // should not repeat - to be corrected
-      avatar: avatar[0]
+      avatar: avatar
     },
     offer: {
-      // should not repeat - to be corrected
-      title: title[getRandomIntInclusive(0, title.length - 1)],
+      title: title,
       address: locX.toString(10) + ', ' + locY.toString(10),
-      price: getRandomIntInclusive (minPrice, maxPrice),
+      price: getRandomIntInclusive(minPrice, maxPrice),
       type: type[getRandomIntInclusive(0, type.length - 1)],
-      rooms: getRandomIntInclusive (minRooms, maxRooms),
-      guests: getRandomIntInclusive (minGuests, maxGuests),
-      checkin: checkin[getRandomIntInclusive (0, checkin.length - 1)],
-      checkout: checkout[getRandomIntInclusive (0, checkout.length - 1)],
-      // should be random length - to be corrected
-      features: features[0],
+      rooms: getRandomIntInclusive(minRooms, maxRooms),
+      guests: getRandomIntInclusive(minGuests, maxGuests),
+      checkin: checkin[getRandomIntInclusive(0, checkin.length - 1)],
+      checkout: checkout[getRandomIntInclusive(0, checkout.length - 1)],
+      features: selectRandomNoRepeat(features),
       description: '',
       photos: photos
     },
@@ -70,15 +88,15 @@ var generatePosting = function (avatar, title, type, checkin, checkout, features
       x: locX,
       y: locY
     }
-  }
+  };
   postings.push(newPosting);
   return postings;
 };
 
 // creates an array of posting objects
 for (var i = 0; i < postingsNumber; i++) {
-  generatePosting(avatars, TITLE, TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS);
-};
+  generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS);
+}
 
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
@@ -90,26 +108,27 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 // creates one pin based on the template
 var createPin = function (postingData) {
   var pinElement = pinTemplate.cloneNode(true);
-  pinElement.style.left = postingData.location.x - 25 + 'px';
+  pinElement.style.left = postingData.location.x - 50 / 2 + 'px';
   pinElement.style.top = postingData.location.y - 70 + 'px';
   pinElement.querySelector('img').src = postingData.author.avatar;
   pinElement.querySelector('img').alt = postingData.offer.title;
   return pinElement;
-}
+};
 
 // creates pins and appends them to fragment element
-for (var j = 0; j < postings.length; j++) {
-  fragment.appendChild(createPin(postings[j]));
-}
+postings.forEach(function (item) {
+  fragment.appendChild(createPin(item));
+});
 
 // renders pins
-map.appendChild(fragment);
+mapPins.appendChild(fragment);
 
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var filters = document.querySelector('.map__filters-container');
 
 // creates one card based on the template
 var createCard = function (postingData) {
+  var cardElement = cardTemplate.cloneNode(true);
 
   var typeRussian = function () {
     var offerType = postingData.offer.type;
@@ -121,7 +140,7 @@ var createCard = function (postingData) {
       return 'Дом';
     }
     return 'Бунгало';
-  }
+  };
 
   var guestTextVariation = function () {
     var guestsNumber = postingData.offer.guests;
@@ -129,26 +148,82 @@ var createCard = function (postingData) {
       return guestsNumber + ' гостя';
     }
     return guestsNumber + ' гостей';
-  }
+  };
 
-  var cardElement = cardTemplate.cloneNode(true);
+  var fillFeaturesList = function () {
+    var featuresList = cardElement.querySelector('.popup__features');
+    var wifi = featuresList.querySelector('.popup__feature--wifi');
+    var dishwasher = featuresList.querySelector('.popup__feature--dishwasher');
+    var parking = featuresList.querySelector('.popup__feature--parking');
+    var washer = featuresList.querySelector('.popup__feature--washer');
+    var elevator = featuresList.querySelector('.popup__feature--elevator');
+    var conditioner = featuresList.querySelector('.popup__feature--conditioner');
+
+    var featuresAvailable = postingData.offer.features;
+    var checkWiFi = checkArrayContainsElement(featuresAvailable, FEATURES[0]);
+    var checkDishwasher = checkArrayContainsElement(featuresAvailable, FEATURES[1]);
+    var checkParking = checkArrayContainsElement(featuresAvailable, FEATURES[2]);
+    var checkWasher = checkArrayContainsElement(featuresAvailable, FEATURES[3]);
+    var checkElevator = checkArrayContainsElement(featuresAvailable, FEATURES[4]);
+    var checkConditioner = checkArrayContainsElement(featuresAvailable, FEATURES[5]);
+
+    if (!checkWiFi) {
+      wifi.classList.remove('popup__feature');
+    }
+
+    if (!checkDishwasher) {
+      dishwasher.classList.remove('popup__feature');
+    }
+
+    if (!checkParking) {
+      parking.classList.remove('popup__feature');
+    }
+
+    if (!checkWasher) {
+      washer.classList.remove('popup__feature');
+    }
+
+    if (!checkElevator) {
+      elevator.classList.remove('popup__feature');
+    }
+
+    if (!checkConditioner) {
+      conditioner.classList.remove('popup__feature');
+    }
+    return featuresList;
+  };
+
+  var fillPhotoGallery = function () {
+    var photoGallery = cardElement.querySelector('.popup__photos');
+    var photoItem0 = photoGallery.querySelector('img');
+    photoItem0.src = postingData.offer.photos[0];
+    photoGallery.appendChild(photoItem0);
+    var photoItem1 = photoItem0.cloneNode(true);
+    photoItem1.src = postingData.offer.photos[1];
+    photoGallery.appendChild(photoItem1);
+    var photoItem2 = photoItem0.cloneNode(true);
+    photoItem2.src = postingData.offer.photos[2];
+    photoGallery.appendChild(photoItem2);
+    return photoGallery;
+  };
+
   cardElement.querySelector('.popup__title').textContent = postingData.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = postingData.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = postingData.offer.price + '₽/ночь';
   cardElement.querySelector('.popup__type').textContent = typeRussian();
   cardElement.querySelector('.popup__text--capacity').textContent = postingData.offer.rooms + ' комнаты для ' + guestTextVariation();
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + postingData.offer.checkin + ', выезд до ' + postingData.offer.checkout;
-  cardElement.querySelector('.popup__features').textContent = postingData.offer.features;
+  fillFeaturesList();
   cardElement.querySelector('.popup__description').textContent = postingData.offer.description;
-  cardElement.querySelector('.popup__photos').querySelector('img').src = postingData.offer.photos[PHOTOS.length - 1];
+  fillPhotoGallery();
+
   cardElement.querySelector('.popup__avatar').src = postingData.author.avatar;
 
   return cardElement;
+};
 
-}
-
-for (var k = 0; k < postings.length; k++) {
-  fragment.appendChild(createCard(postings[k]));
-}
+postings.forEach(function (item) {
+  fragment.appendChild(createCard(item));
+});
 
 map.insertBefore(fragment, filters);
