@@ -21,7 +21,7 @@ var postingsNumber = 8;
 /** @function generateAvatar - creates one avatar path
 */
 /**
-* @param {number} avatarNumber - number from 1 to 8
+* @param {number} avatarNumber - number from 1 to the last posting number
 * @return {string}
 */
 var generateAvatar = function (avatarNumber) {
@@ -49,7 +49,7 @@ var getRandomIntInclusive = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-/** @function - Selects random items from an array without duplicates
+/** @function selectRandomNoRepeat - Selects random items from an array without duplicates
 */
 /**
 * @param {string[]} array - array of string elements to choose from
@@ -128,7 +128,7 @@ for (var i = 0; i < postingsNumber; i++) {
   postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
 }
 
-// Creates varaiables and gets reference to elements used in pins rendering
+// Creates variables and gets reference to elements used in pins rendering
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 var fragment = document.createDocumentFragment();
@@ -140,7 +140,7 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 */
 /**
 * @param {Object} postingData - an object of posting data
-* @return {Object} //?
+* @return {node}
  */
 var createPin = function (postingData) {
   var pinElement = pinTemplate.cloneNode(true);
@@ -169,7 +169,7 @@ var filters = document.querySelector('.map__filters-container');
 */
 /**
 * @param {Object} postingData - data for one posting
-* @return {Object} //?
+* @return {node}
 */
 var createCard = function (postingData) {
   var cardElement = cardTemplate.cloneNode(true);
@@ -207,7 +207,7 @@ var createCard = function (postingData) {
   /** @function fillFeaturesList - adds available features
   */
   /**
-  * @return {Object}//?
+  * @return {node}
   */
   var fillFeaturesList = function () {
     var featuresList = cardElement.querySelector('.popup__features');
@@ -219,35 +219,35 @@ var createCard = function (postingData) {
     var conditioner = featuresList.querySelector('.popup__feature--conditioner');
 
     var featuresAvailable = postingData.offer.features;
-    var checkWiFi = checkArrayContainsElement(featuresAvailable, FEATURES[0]);
-    var checkDishwasher = checkArrayContainsElement(featuresAvailable, FEATURES[1]);
-    var checkParking = checkArrayContainsElement(featuresAvailable, FEATURES[2]);
-    var checkWasher = checkArrayContainsElement(featuresAvailable, FEATURES[3]);
-    var checkElevator = checkArrayContainsElement(featuresAvailable, FEATURES[4]);
-    var checkConditioner = checkArrayContainsElement(featuresAvailable, FEATURES[5]);
+    var checkWiFi = checkArrayContainsElement(featuresAvailable, 'wifi');
+    var checkDishwasher = checkArrayContainsElement(featuresAvailable, 'dishwasher');
+    var checkParking = checkArrayContainsElement(featuresAvailable, 'parking');
+    var checkWasher = checkArrayContainsElement(featuresAvailable, 'washer');
+    var checkElevator = checkArrayContainsElement(featuresAvailable, 'elevator');
+    var checkConditioner = checkArrayContainsElement(featuresAvailable, 'conditioner');
 
-    if (!checkWiFi) {
-      wifi.classList.remove('popup__feature');
-    }
-
-    if (!checkDishwasher) {
-      dishwasher.classList.remove('popup__feature');
-    }
-
-    if (!checkParking) {
-      parking.classList.remove('popup__feature');
-    }
-
-    if (!checkWasher) {
-      washer.classList.remove('popup__feature');
-    }
-
-    if (!checkElevator) {
-      elevator.classList.remove('popup__feature');
-    }
-
-    if (!checkConditioner) {
-      conditioner.classList.remove('popup__feature');
+    if (featuresAvailable.length === 0) {
+      featuresList.style.display = 'none';
+      return false;
+    } else {
+      if (!checkWiFi) {
+        wifi.style.display = 'none';
+      }
+      if (!checkDishwasher) {
+        dishwasher.style.display = 'none';
+      }
+      if (!checkParking) {
+        parking.style.display = 'none';
+      }
+      if (!checkWasher) {
+        washer.style.display = 'none';
+      }
+      if (!checkElevator) {
+        elevator.style.display = 'none';
+      }
+      if (!checkConditioner) {
+        conditioner.style.display = 'none';
+      }
     }
     return featuresList;
   };
@@ -255,19 +255,22 @@ var createCard = function (postingData) {
   /** @function fillPhotoGallery - adds more img tags to template and corresponding photo paths
   */
   /**
-  * @return {Object}//?
+  * @return {node}
   */
   var fillPhotoGallery = function () {
     var photoGallery = cardElement.querySelector('.popup__photos');
     var photoItem0 = photoGallery.querySelector('img');
     photoItem0.src = postingData.offer.photos[0];
     photoGallery.appendChild(photoItem0);
-    var photoItem1 = photoItem0.cloneNode(true);
-    photoItem1.src = postingData.offer.photos[1];
-    photoGallery.appendChild(photoItem1);
-    var photoItem2 = photoItem0.cloneNode(true);
-    photoItem2.src = postingData.offer.photos[2];
-    photoGallery.appendChild(photoItem2);
+    var numberPhotosAfterFirst = postingData.offer.photos.length - 1;
+    if (numberPhotosAfterFirst === 0) {
+      return photoGallery;
+    }
+    for (var photoIndex = 1; photoIndex <= numberPhotosAfterFirst; photoIndex++) {
+      var photoItem = photoItem0.cloneNode(true);
+      photoItem.src = postingData.offer.photos[photoIndex];
+      photoGallery.appendChild(photoItem);
+    }
     return photoGallery;
   };
 
