@@ -6,6 +6,7 @@ var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var PIN_MAIN_SIZE = 65;
 var minPrice = 1000;
 var maxPrice = 1000000;
 var minRooms = 1;
@@ -130,7 +131,7 @@ for (var i = 0; i < postingsNumber; i++) {
 
 // Creates variables and gets reference to elements used in pins rendering
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+// map.classList.remove('map--faded');
 var fragment = document.createDocumentFragment();
 
 var mapPins = document.querySelector('.map__pins');
@@ -153,17 +154,19 @@ var createPin = function (postingData) {
 
 
 // Creates pins and appends them to fragment element
-postings.forEach(function (item) {
-  fragment.appendChild(createPin(item));
-});
+// postings.forEach(function (item) {
+//   fragment.appendChild(createPin(item));
+// });
 
 // Renders pins
-mapPins.appendChild(fragment);
+// mapPins.appendChild(fragment);
 
 
 // Creates variables and gets reference to elements used in pins rendering
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var filters = document.querySelector('.map__filters-container');
+// var filters = document.querySelector('.map__filters-container');
+var filters = document.querySelector('.map__filters');
+
 
 /** @function createCard - creates one card based on the template
 */
@@ -290,9 +293,54 @@ var createCard = function (postingData) {
 };
 
 // Creates cards and appends them to fragment element
-postings.forEach(function (item) {
-  fragment.appendChild(createCard(item));
-});
+// postings.forEach(function (item) {
+//   fragment.appendChild(createCard(item));
+// });
 
 // Renders cards
-map.insertBefore(fragment, filters);
+// map.insertBefore(fragment, filters);
+
+
+// Ad form - fieldset elements disabled
+var adForm = document.querySelector('.ad-form');
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
+adFormFieldsets.forEach(function (fieldset) {
+  fieldset.setAttribute('disabled', '');
+});
+
+// Filters form - select elements and fieldset elements disabled
+var filtersSelect = filters.querySelectorAll('select');
+filtersSelect.forEach(function (section) {
+  section.setAttribute('disabled', '');
+});
+var filtersFieldset = filters.querySelector('fieldset');
+filtersFieldset.setAttribute('disabled', '');
+
+// Main pin
+var pinMain = document.querySelector('.map__pin--main');
+var address = adForm.querySelector('#address');
+var pinMainLocLeft = pinMain.style.left;
+var pinMainLocTop = pinMain.style.top;
+var pinMainLocLeftNumber = parseInt(pinMainLocLeft.substring(0, pinMainLocLeft.length - 2), 10);
+var pinMainLocTopNumber = parseInt(pinMainLocTop.substring(0, pinMainLocTop.length - 2), 10);
+address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Math.round(pinMainLocTopNumber + PIN_MAIN_SIZE / 2);
+var onPinMainMouseup = function (evt) {
+  adFormFieldsets.forEach(function (fieldset) {
+    fieldset.removeAttribute('disabled');
+  });
+  filtersSelect.forEach(function (section) {
+    section.removeAttribute('disabled');
+  });
+  filtersFieldset.removeAttribute('disabled');
+  address.value = evt.clientX + ', ' + evt.clientY;
+
+  // Creates pins and appends them to fragment element
+  postings.forEach(function (item) {
+    fragment.appendChild(createPin(item));
+  });
+
+  // Renders pins
+  mapPins.appendChild(fragment);
+};
+
+pinMain.addEventListener('mouseup', onPinMainMouseup);
