@@ -152,19 +152,9 @@ var createPin = function (postingData) {
   return pinElement;
 };
 
-
-// Creates pins and appends them to fragment element
-// postings.forEach(function (item) {
-//   fragment.appendChild(createPin(item));
-// });
-
-// Renders pins
-// mapPins.appendChild(fragment);
-
-
 // Creates variables and gets reference to elements used in pins rendering
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-// var filters = document.querySelector('.map__filters-container');
+var filtersContainer = document.querySelector('.map__filters-container');
 var filters = document.querySelector('.map__filters');
 
 
@@ -292,15 +282,6 @@ var createCard = function (postingData) {
   return cardElement;
 };
 
-// Creates cards and appends them to fragment element
-// postings.forEach(function (item) {
-//   fragment.appendChild(createCard(item));
-// });
-
-// Renders cards
-// map.insertBefore(fragment, filters);
-
-
 // Ad form - fieldset elements disabled
 var adForm = document.querySelector('.ad-form');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
@@ -341,6 +322,76 @@ var onPinMainMouseup = function (evt) {
 
   // Renders pins
   mapPins.appendChild(fragment);
+
+  // Add IDs to pins
+  mapPins.querySelector('button:nth-of-type(2)').setAttribute('id', 'pin0');
+  mapPins.querySelector('button:nth-of-type(3)').setAttribute('id', 'pin1');
+  mapPins.querySelector('button:nth-of-type(4)').setAttribute('id', 'pin2');
+  mapPins.querySelector('button:nth-of-type(5)').setAttribute('id', 'pin3');
+  mapPins.querySelector('button:nth-of-type(6)').setAttribute('id', 'pin4');
+  mapPins.querySelector('button:nth-of-type(7)').setAttribute('id', 'pin5');
+  mapPins.querySelector('button:nth-of-type(8)').setAttribute('id', 'pin6');
+  mapPins.querySelector('button:nth-of-type(9)').setAttribute('id', 'pin7');
+
+  var pin0 = document.getElementById('pin0');
+  var pin1 = document.getElementById('pin1');
+  var pin2 = document.getElementById('pin2');
+  var pin3 = document.getElementById('pin3');
+  var pin4 = document.getElementById('pin4');
+  var pin5 = document.getElementById('pin5');
+  var pin6 = document.getElementById('pin6');
+  var pin7 = document.getElementById('pin7');
+
+  // Event Handlers for each pin
+  var onPin0Mouseup = function () {
+    fragment.appendChild(createCard(postings[0]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin1Mouseup = function () {
+    fragment.appendChild(createCard(postings[1]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin2Mouseup = function () {
+    fragment.appendChild(createCard(postings[2]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin3Mouseup = function () {
+    fragment.appendChild(createCard(postings[3]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin4Mouseup = function () {
+    fragment.appendChild(createCard(postings[4]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin5Mouseup = function () {
+    fragment.appendChild(createCard(postings[5]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin6Mouseup = function () {
+    fragment.appendChild(createCard(postings[6]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  var onPin7Mouseup = function () {
+    fragment.appendChild(createCard(postings[7]));
+    map.insertBefore(fragment, filtersContainer);
+  };
+
+  // Event Handlers registered
+  pin0.addEventListener('mouseup', onPin0Mouseup);
+  pin1.addEventListener('mouseup', onPin1Mouseup);
+  pin2.addEventListener('mouseup', onPin2Mouseup);
+  pin3.addEventListener('mouseup', onPin3Mouseup);
+  pin4.addEventListener('mouseup', onPin4Mouseup);
+  pin5.addEventListener('mouseup', onPin5Mouseup);
+  pin6.addEventListener('mouseup', onPin6Mouseup);
+  pin7.addEventListener('mouseup', onPin7Mouseup);
 };
 
 pinMain.addEventListener('mouseup', onPinMainMouseup);
