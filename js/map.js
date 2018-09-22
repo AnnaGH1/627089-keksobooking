@@ -1,5 +1,6 @@
 'use strict';
-
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -305,6 +306,8 @@ var pinMainLocTop = pinMain.style.top;
 var pinMainLocLeftNumber = parseInt(pinMainLocLeft.substring(0, pinMainLocLeft.length - 2), 10);
 var pinMainLocTopNumber = parseInt(pinMainLocTop.substring(0, pinMainLocTop.length - 2), 10);
 address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Math.round(pinMainLocTopNumber + PIN_MAIN_SIZE / 2);
+
+// Activates page
 var onPinMainMouseup = function (evt) {
   adFormFieldsets.forEach(function (fieldset) {
     fieldset.removeAttribute('disabled');
@@ -323,7 +326,7 @@ var onPinMainMouseup = function (evt) {
   // Renders pins
   mapPins.appendChild(fragment);
 
-  // Add IDs to pins
+  // Adds IDs to pins
   mapPins.querySelector('button:nth-of-type(2)').setAttribute('id', 'pin0');
   mapPins.querySelector('button:nth-of-type(3)').setAttribute('id', 'pin1');
   mapPins.querySelector('button:nth-of-type(4)').setAttribute('id', 'pin2');
@@ -333,6 +336,7 @@ var onPinMainMouseup = function (evt) {
   mapPins.querySelector('button:nth-of-type(8)').setAttribute('id', 'pin6');
   mapPins.querySelector('button:nth-of-type(9)').setAttribute('id', 'pin7');
 
+  // Gets reference to pins
   var pin0 = document.getElementById('pin0');
   var pin1 = document.getElementById('pin1');
   var pin2 = document.getElementById('pin2');
@@ -342,45 +346,371 @@ var onPinMainMouseup = function (evt) {
   var pin6 = document.getElementById('pin6');
   var pin7 = document.getElementById('pin7');
 
-  // Event Handlers for each pin
+  // Creates cards and appends them to fragment element
+  postings.forEach(function (item) {
+    fragment.appendChild(createCard(item));
+  });
+
+  // Renders cards
+  map.insertBefore(fragment, filtersContainer);
+
+  // Adds IDs to cards
+  map.querySelector('article:nth-of-type(1)').setAttribute('id', 'card0');
+  map.querySelector('article:nth-of-type(2)').setAttribute('id', 'card1');
+  map.querySelector('article:nth-of-type(3)').setAttribute('id', 'card2');
+  map.querySelector('article:nth-of-type(4)').setAttribute('id', 'card3');
+  map.querySelector('article:nth-of-type(5)').setAttribute('id', 'card4');
+  map.querySelector('article:nth-of-type(6)').setAttribute('id', 'card5');
+  map.querySelector('article:nth-of-type(7)').setAttribute('id', 'card6');
+  map.querySelector('article:nth-of-type(8)').setAttribute('id', 'card7');
+
+  // Gets reference to cards and adds class 'hidden'
+  var card0 = document.getElementById('card0');
+  card0.classList.add('hidden');
+  var card1 = document.getElementById('card1');
+  card1.classList.add('hidden');
+  var card2 = document.getElementById('card2');
+  card2.classList.add('hidden');
+  var card3 = document.getElementById('card3');
+  card3.classList.add('hidden');
+  var card4 = document.getElementById('card4');
+  card4.classList.add('hidden');
+  var card5 = document.getElementById('card5');
+  card5.classList.add('hidden');
+  var card6 = document.getElementById('card6');
+  card6.classList.add('hidden');
+  var card7 = document.getElementById('card7');
+  card7.classList.add('hidden');
+
+
+  // Event Handlers for each pin-card pair
   var onPin0Mouseup = function () {
-    fragment.appendChild(createCard(postings[0]));
-    map.insertBefore(fragment, filtersContainer);
+    // Close previous card if open
+    if (!card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin0.classList.add('map__pin--active');
+    card0.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card0.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin1Mouseup = function () {
-    fragment.appendChild(createCard(postings[1]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin1.classList.add('map__pin--active');
+    card1.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card1.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin2Mouseup = function () {
-    fragment.appendChild(createCard(postings[2]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin2.classList.add('map__pin--active');
+    card2.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card2.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin3Mouseup = function () {
-    fragment.appendChild(createCard(postings[3]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin3.classList.add('map__pin--active');
+    card3.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card3.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin4Mouseup = function () {
-    fragment.appendChild(createCard(postings[4]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin4.classList.add('map__pin--active');
+    card4.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card4.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin5Mouseup = function () {
-    fragment.appendChild(createCard(postings[5]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card6.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin5.classList.add('map__pin--active');
+    card5.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card5.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin6Mouseup = function () {
-    fragment.appendChild(createCard(postings[6]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card7.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+    }
+
+    pin6.classList.add('map__pin--active');
+    card6.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card6.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   var onPin7Mouseup = function () {
-    fragment.appendChild(createCard(postings[7]));
-    map.insertBefore(fragment, filtersContainer);
+    if (!card0.classList.contains('hidden') || !card1.classList.contains('hidden') || !card2.classList.contains('hidden') || !card3.classList.contains('hidden') || !card4.classList.contains('hidden') || !card5.classList.contains('hidden') || !card6.classList.contains('hidden')) {
+      pin0.classList.remove('map__pin--active');
+      card0.classList.add('hidden');
+      pin1.classList.remove('map__pin--active');
+      card1.classList.add('hidden');
+      pin2.classList.remove('map__pin--active');
+      card2.classList.add('hidden');
+      pin3.classList.remove('map__pin--active');
+      card3.classList.add('hidden');
+      pin4.classList.remove('map__pin--active');
+      card4.classList.add('hidden');
+      pin5.classList.remove('map__pin--active');
+      card5.classList.add('hidden');
+      pin6.classList.remove('map__pin--active');
+      card6.classList.add('hidden');
+    }
+
+    pin7.classList.add('map__pin--active');
+    card7.classList.remove('hidden');
+
+    var closePopup = function () {
+      pin7.classList.remove('map__pin--active');
+      card7.classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+
+    var onPopupEscPress = function (e) {
+      if (e.keyCode === ESC_KEYCODE) {
+        closePopup();
+      }
+    };
+
+    // Handlers to close popup
+    document.addEventListener('keydown', onPopupEscPress);
+    var popupCloseButton = card7.querySelector('.popup__close');
+    popupCloseButton.addEventListener('click', function () {
+      closePopup();
+    });
   };
 
   // Event Handlers registered
