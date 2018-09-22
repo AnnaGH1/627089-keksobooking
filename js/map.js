@@ -381,6 +381,8 @@ var onPinMainMouseup = function (evt) {
   var card7 = document.getElementById('card7');
   card7.classList.add('hidden');
 
+  // not working
+  // var allCards = map.getElementsByClassName('popup');
 
   // Event Handlers for each pin-card pair
   var onPin0Mouseup = function () {
@@ -721,6 +723,8 @@ var onPinMainMouseup = function (evt) {
   pin5.addEventListener('mouseup', onPin5Mouseup);
   pin6.addEventListener('mouseup', onPin6Mouseup);
   pin7.addEventListener('mouseup', onPin7Mouseup);
+
+  pinMain.removeEventListener('mouseup', onPinMainMouseup);
 };
 
 pinMain.addEventListener('mouseup', onPinMainMouseup);
