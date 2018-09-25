@@ -328,11 +328,11 @@ var onPinMainMouseup = function (evt) {
   // Renders pins
   mapPins.appendChild(fragment);
 
-  // Gets reference to pins and adds IDs to pins
+  // Gets reference to pins and adds IDs (equal to pin element index and posting index) to pins
   allPins = map.getElementsByClassName('map__pin--posting');
-  for (var p = 0; p < allPins.length; p++) {
-    allPins[p].setAttribute('id', p);
-  }
+  [].forEach.call(allPins, function (item, index, array) {
+    array[index].setAttribute('id', index);
+  });
 
   // Creates cards and appends them to fragment element
   postings.forEach(function (item) {
@@ -342,54 +342,54 @@ var onPinMainMouseup = function (evt) {
   // Renders cards
   map.insertBefore(fragment, filtersContainer);
 
-
   // Gets reference to cards and adds class 'hidden'
   allCards = map.getElementsByClassName('popup');
-  for (var c = 0; c < allCards.length; c++) {
-    allCards[c].classList.add('hidden');
-  }
+  [].forEach.call(allCards, function (item, index, array) {
+    array[index].classList.add('hidden');
+  });
 
   // Event Handler registered
-  for (var h = 0; h < allPins.length; h++) {
-    allPins[h].addEventListener('mouseup', onPinMouseup);
-  }
+  [].forEach.call(allPins, function (item, index) {
+    allPins[index].addEventListener('mouseup', onPinMouseup);
+  });
 
   pinMain.removeEventListener('mouseup', onPinMainMouseup);
 };
 
 pinMain.addEventListener('mouseup', onPinMainMouseup);
 
-
 // Event Handler for any pin
 var onPinMouseup = function (evt) {
-  var index = evt.currentTarget.id;
+  var postingIndex = evt.currentTarget.id;
 
   // Close previous card if open
-  for (var s = 0; s < allCards.length; s++) {
-    if (!allCards[s].classList.contains('hidden')) {
-      allCards[s].classList.add('hidden');
-      allPins[s].classList.remove('map__pin--active');
+  for (var c = 0; c < allCards.length; c++) {
+    if (!allCards[c].classList.contains('hidden')) {
+      allPins[c].classList.remove('map__pin--active');
+      allCards[c].classList.add('hidden');
+      document.removeEventListener('keydown', onPopupEscPress); // does not work
+      break;
     }
   }
 
-  allPins[index].classList.add('map__pin--active');
-  allCards[index].classList.remove('hidden');
+  allPins[postingIndex].classList.add('map__pin--active');
+  allCards[postingIndex].classList.remove('hidden');
 
   var closePopup = function () {
-    allPins[index].classList.remove('map__pin--active');
-    allCards[index].classList.add('hidden');
+    allPins[postingIndex].classList.remove('map__pin--active');
+    allCards[postingIndex].classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
   };
 
-  var onPopupEscPress = function (e) {
-    if (e.keyCode === ESC_KEYCODE) {
+  var onPopupEscPress = function (evtKey) {
+    if (evtKey.keyCode === ESC_KEYCODE) {
       closePopup();
     }
   };
 
   // Handlers to close popup
   document.addEventListener('keydown', onPopupEscPress);
-  var popupCloseButton = allCards[index].querySelector('.popup__close');
+  var popupCloseButton = allCards[postingIndex].querySelector('.popup__close');
   popupCloseButton.addEventListener('click', function () {
     closePopup();
   });
