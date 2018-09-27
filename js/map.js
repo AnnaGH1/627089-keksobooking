@@ -21,12 +21,7 @@ var postingsNumber = 8;
 var allPins;
 var allCards;
 
-/** @function generateAvatar - creates one avatar path
-*/
-/**
-* @param {number} avatarNumber - number from 1 to the last posting number
-* @return {string}
-*/
+// Creates one avatar path
 var generateAvatar = function (avatarNumber) {
   var newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
   return newAvatar;
@@ -34,30 +29,23 @@ var generateAvatar = function (avatarNumber) {
 
 // Creates an array of avatars
 var avatars = [];
-for (var a = 1; a <= postingsNumber; a++) {
-  avatars.push(generateAvatar(a));
-}
+var createAvatarsArray = function () {
+  for (var i = 1; i <= postingsNumber; i++) {
+    avatars.push(generateAvatar(i));
+  }
+  return avatars;
+};
 
-/**
-@function getRandomIntInclusive - Gets a random integer between two values, inclusive
-*/
-/**
-* @param {number} min - min value
-* @param {number} max - max value
-* @return {number}
-*/
+createAvatarsArray();
+
+// Gets a random integer between two values, inclusive
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-/** @function selectRandomNoRepeat - Selects random items from an array without duplicates
-*/
-/**
-* @param {string[]} array - array of string elements to choose from
-* @return {string[]} - array of randomly chosen elements
-*/
+// Selects random items from an array without duplicates
 var selectRandomNoRepeat = function (array) {
   var selection = [];
   array.forEach(function (item) {
@@ -69,34 +57,17 @@ var selectRandomNoRepeat = function (array) {
   return selection;
 };
 
-/** @function checkArrayContainsElement - checks if an array contains an elements
-*/
-/**
-* @param {(string[]|number[])} array - array of string or number elements
-* @param {(string|number)} element - element being checked
-* @return {boolean} - true if an array contains an element
-*/
+// Checks if an array contains an element
 var checkArrayContainsElement = function (array, element) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] === element) {
+  array.forEach(function (item) {
+    if (item === element) {
       return true;
     }
-  }
-  return false;
+    return false;
+  });
 };
 
-/** @function generatePosting - creates one posting
-*/
-/**
-* @param {string} avatar - avatar path
-* @param {string} title - posting title
-* @param {string[]} type - array of type names
-* @param {string[]} checkin - array of checkin times
-* @param {string[]} checkout - array of checkout times
-* @param {string[]} features - array of features
-* @param {string[]} photos - array of photo paths
-* @return {Object}
-*/
+// Creates one posting
 var generatePosting = function (avatar, title, type, checkin, checkout, features, photos) {
   var locX = getRandomIntInclusive(minLocX, maxLocX);
   var locY = getRandomIntInclusive(minLocY, maxLocY);
@@ -127,9 +98,14 @@ var generatePosting = function (avatar, title, type, checkin, checkout, features
 
 // Creates an array of posting objects
 var postings = [];
-for (var i = 0; i < postingsNumber; i++) {
-  postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
-}
+var createPostingsArray = function () {
+  for (var i = 0; i < postingsNumber; i++) {
+    postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
+  }
+  return postings;
+};
+
+createPostingsArray();
 
 // Creates variables and gets reference to elements used in pins rendering
 var map = document.querySelector('.map');
@@ -139,12 +115,7 @@ var fragment = document.createDocumentFragment();
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-/** @function createPin - creates one pin based on the template
-*/
-/**
-* @param {Object} postingData - an object of posting data
-* @return {node}
- */
+// Creates one pin based on the template
 var createPin = function (postingData) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = postingData.location.x - 50 / 2 + 'px';
@@ -161,20 +132,11 @@ var filtersContainer = document.querySelector('.map__filters-container');
 var filters = document.querySelector('.map__filters');
 
 
-/** @function createCard - creates one card based on the template
-*/
-/**
-* @param {Object} postingData - data for one posting
-* @return {node}
-*/
+// Creates one card based on the template
 var createCard = function (postingData) {
   var cardElement = cardTemplate.cloneNode(true);
 
-  /** @function typeRussian - replaces offer type in English by Russian translation
-  */
-  /**
-  * @return {string}
-  */
+  // Replaces offer type in English by Russian translation
   var typeRussian = function () {
     var offerType = postingData.offer.type;
     if (offerType === 'palace') {
@@ -187,11 +149,7 @@ var createCard = function (postingData) {
     return 'Бунгало';
   };
 
-  /** @function guestTextVariation - word form correction in Russian
-  */
-  /**
-  * @return {string}
-  */
+  // Word form correction in Russian
   var guestTextVariation = function () {
     var guestsNumber = postingData.offer.guests;
     if (guestsNumber === 1) {
@@ -200,11 +158,7 @@ var createCard = function (postingData) {
     return guestsNumber + ' гостей';
   };
 
-  /** @function fillFeaturesList - adds available features
-  */
-  /**
-  * @return {node}
-  */
+  // Adds available features
   var fillFeaturesList = function () {
     var featuresList = cardElement.querySelector('.popup__features');
     var wifi = featuresList.querySelector('.popup__feature--wifi');
@@ -248,11 +202,7 @@ var createCard = function (postingData) {
     return featuresList;
   };
 
-  /** @function fillPhotoGallery - adds more img tags to template and corresponding photo paths
-  */
-  /**
-  * @return {node}
-  */
+  // Adds more img tags to template and corresponding photo paths
   var fillPhotoGallery = function () {
     var photoGallery = cardElement.querySelector('.popup__photos');
     var photoItem0 = photoGallery.querySelector('img');
@@ -286,17 +236,17 @@ var createCard = function (postingData) {
 };
 
 // Ad form - fieldset elements disabled
+var setDisabled = function (element) {
+  element.setAttribute('disabled', '');
+  return element;
+};
 var adForm = document.querySelector('.ad-form');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
-adFormFieldsets.forEach(function (fieldset) {
-  fieldset.setAttribute('disabled', '');
-});
+adFormFieldsets.forEach(setDisabled);
 
 // Filters form - select elements and fieldset elements disabled
 var filtersSelect = filters.querySelectorAll('select');
-filtersSelect.forEach(function (section) {
-  section.setAttribute('disabled', '');
-});
+filtersSelect.forEach(setDisabled);
 var filtersFieldset = filters.querySelector('fieldset');
 filtersFieldset.setAttribute('disabled', '');
 
@@ -311,19 +261,22 @@ address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Ma
 
 // Activates page
 var onPinMainMouseup = function (evt) {
+  var removeDisabled = function (element) {
+    element.removeAttribute('disabled');
+    return element;
+  };
   adForm.classList.remove('ad-form--disabled');
-  adFormFieldsets.forEach(function (fieldset) {
-    fieldset.removeAttribute('disabled');
-  });
-  filtersSelect.forEach(function (section) {
-    section.removeAttribute('disabled');
-  });
+  adFormFieldsets.forEach(removeDisabled);
+  filtersSelect.forEach(removeDisabled);
   filtersFieldset.removeAttribute('disabled');
   address.value = evt.clientX + ', ' + evt.clientY;
 
-  // Creates pins and appends them to fragment element
-  postings.forEach(function (item) {
-    fragment.appendChild(createPin(item));
+  // Creates pins, adds IDs (equal to pin element index and posting index), registers Event Handler, and appends them to fragment element
+  postings.forEach(function (item, index) {
+    var pin = createPin(item);
+    pin.setAttribute('id', index);
+    pin.addEventListener('mouseup', onPinMouseup);
+    fragment.appendChild(pin);
   });
 
   // Renders pins
@@ -331,13 +284,12 @@ var onPinMainMouseup = function (evt) {
 
   // Gets reference to pins and adds IDs (equal to pin element index and posting index) to pins
   allPins = map.getElementsByClassName('map__pin--posting');
-  [].forEach.call(allPins, function (item, index, array) {
-    array[index].setAttribute('id', index);
-  });
 
-  // Creates cards and appends them to fragment element
+  // Creates cards, adds class 'hidden', and appends them to fragment element
   postings.forEach(function (item) {
-    fragment.appendChild(createCard(item));
+    var card = createCard(item);
+    card.classList.add('hidden');
+    fragment.appendChild(card);
   });
 
   // Renders cards
@@ -345,14 +297,6 @@ var onPinMainMouseup = function (evt) {
 
   // Gets reference to cards and adds class 'hidden'
   allCards = map.getElementsByClassName('popup');
-  [].forEach.call(allCards, function (item, index, array) {
-    array[index].classList.add('hidden');
-  });
-
-  // Event Handler registered
-  [].forEach.call(allPins, function (item, index) {
-    allPins[index].addEventListener('mouseup', onPinMouseup);
-  });
 
   pinMain.removeEventListener('mouseup', onPinMainMouseup);
 };
@@ -363,18 +307,11 @@ pinMain.addEventListener('mouseup', onPinMainMouseup);
 var onPinMouseup = function (evt) {
   var postingIndex = evt.currentTarget.id;
 
-  // Close previous card if open
-  for (var c = 0; c < allCards.length; c++) {
-    if (!allCards[c].classList.contains('hidden')) {
-      allPins[c].classList.remove('map__pin--active');
-      allCards[c].classList.add('hidden');
-      document.removeEventListener('keydown', onPopupEscPress); // does not work
-      break;
+  var onPopupEscPress = function (evtKey) {
+    if (evtKey.keyCode === ESC_KEYCODE) {
+      closePopup();
     }
-  }
-
-  allPins[postingIndex].classList.add('map__pin--active');
-  allCards[postingIndex].classList.remove('hidden');
+  };
 
   var closePopup = function () {
     allPins[postingIndex].classList.remove('map__pin--active');
@@ -382,11 +319,21 @@ var onPinMouseup = function (evt) {
     document.removeEventListener('keydown', onPopupEscPress);
   };
 
-  var onPopupEscPress = function (evtKey) {
-    if (evtKey.keyCode === ESC_KEYCODE) {
-      closePopup();
+  // Close previous card if open
+  var closeOpenedCard = function () {
+    for (var i = 0; i < allCards.length; i++) {
+      if (!allCards[i].classList.contains('hidden')) {
+        allPins[i].classList.remove('map__pin--active');
+        allCards[i].classList.add('hidden');
+        document.removeEventListener('keydown', onPopupEscPress); // does not work
+      }
     }
   };
+
+  closeOpenedCard();
+
+  allPins[postingIndex].classList.add('map__pin--active');
+  allCards[postingIndex].classList.remove('hidden');
 
   // Handlers to close popup
   document.addEventListener('keydown', onPopupEscPress);
@@ -395,24 +342,3 @@ var onPinMouseup = function (evt) {
     closePopup();
   });
 };
-
-// Form validation - rooms capacity
-// var roomsSelect = adForm.elements.rooms;
-// var guestsSelect = adForm.elements.capacity;
-//
-// var checkRoomdsAndGuests = function () {
-//   if (roomsSelect.value === '1' && guestsSelect.value !== '1') {
-//     guestsSelect.setCustomValidity('Не больше 1 гостя');
-//   } else if ((roomsSelect.value === '2' && guestsSelect.value === '3') || (roomsSelect.value === '2' && guestsSelect.value === '0')) {
-//     guestsSelect.setCustomValidity('Не больше 2 гостей');
-//   } else if (roomsSelect.value === '3' && guestsSelect.value === '0') {
-//     guestsSelect.setCustomValidity('Не больше 3 гостей');
-//   } else if (roomsSelect.value === '100' && guestsSelect.value !== '0') {
-//     guestsSelect.setCustomValidity('Не для гостей');
-//   } else {
-//     guestsSelect.setCustomValidity('');
-//   }
-// };
-//
-// roomsSelect.addEventListener('change', checkRoomdsAndGuests);
-// guestsSelect.addEventListener('change', checkRoomdsAndGuests);
