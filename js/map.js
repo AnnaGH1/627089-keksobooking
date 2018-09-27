@@ -311,6 +311,7 @@ address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Ma
 
 // Activates page
 var onPinMainMouseup = function (evt) {
+  adForm.classList.remove('ad-form--disabled');
   adFormFieldsets.forEach(function (fieldset) {
     fieldset.removeAttribute('disabled');
   });
@@ -394,3 +395,24 @@ var onPinMouseup = function (evt) {
     closePopup();
   });
 };
+
+// Form validation - rooms capacity
+// var roomsSelect = adForm.elements.rooms;
+// var guestsSelect = adForm.elements.capacity;
+//
+// var checkRoomdsAndGuests = function () {
+//   if (roomsSelect.value === '1' && guestsSelect.value !== '1') {
+//     guestsSelect.setCustomValidity('Не больше 1 гостя');
+//   } else if ((roomsSelect.value === '2' && guestsSelect.value === '3') || (roomsSelect.value === '2' && guestsSelect.value === '0')) {
+//     guestsSelect.setCustomValidity('Не больше 2 гостей');
+//   } else if (roomsSelect.value === '3' && guestsSelect.value === '0') {
+//     guestsSelect.setCustomValidity('Не больше 3 гостей');
+//   } else if (roomsSelect.value === '100' && guestsSelect.value !== '0') {
+//     guestsSelect.setCustomValidity('Не для гостей');
+//   } else {
+//     guestsSelect.setCustomValidity('');
+//   }
+// };
+//
+// roomsSelect.addEventListener('change', checkRoomdsAndGuests);
+// guestsSelect.addEventListener('change', checkRoomdsAndGuests);
