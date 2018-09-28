@@ -282,7 +282,7 @@ var onPinMainMouseup = function (evt) {
   // Renders pins
   mapPins.appendChild(fragment);
 
-  // Gets reference to pins and adds IDs (equal to pin element index and posting index) to pins
+  // Gets reference to pins
   allPins = map.getElementsByClassName('map__pin--posting');
 
   // Creates cards, adds class 'hidden', and appends them to fragment element
@@ -295,7 +295,7 @@ var onPinMainMouseup = function (evt) {
   // Renders cards
   map.insertBefore(fragment, filtersContainer);
 
-  // Gets reference to cards and adds class 'hidden'
+  // Gets reference to cards
   allCards = map.getElementsByClassName('popup');
 
   pinMain.removeEventListener('mouseup', onPinMainMouseup);
