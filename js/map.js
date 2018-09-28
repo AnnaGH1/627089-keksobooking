@@ -1,11 +1,12 @@
 'use strict';
-
+var ESC_KEYCODE = 27;
 var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var PIN_MAIN_SIZE = 65;
 var minPrice = 1000;
 var maxPrice = 1000000;
 var minRooms = 1;
@@ -17,13 +18,10 @@ var maxLocX = document.body.clientWidth - 100;
 var minLocY = 130;
 var maxLocY = 630;
 var postingsNumber = 8;
+var allPins;
+var allCards;
 
-/** @function generateAvatar - creates one avatar path
-*/
-/**
-* @param {number} avatarNumber - number from 1 to the last posting number
-* @return {string}
-*/
+// Creates one avatar path
 var generateAvatar = function (avatarNumber) {
   var newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
   return newAvatar;
@@ -31,30 +29,23 @@ var generateAvatar = function (avatarNumber) {
 
 // Creates an array of avatars
 var avatars = [];
-for (var a = 1; a <= postingsNumber; a++) {
-  avatars.push(generateAvatar(a));
-}
+var createAvatarsArray = function () {
+  for (var i = 1; i <= postingsNumber; i++) {
+    avatars.push(generateAvatar(i));
+  }
+  return avatars;
+};
 
-/**
-@function getRandomIntInclusive - Gets a random integer between two values, inclusive
-*/
-/**
-* @param {number} min - min value
-* @param {number} max - max value
-* @return {number}
-*/
+createAvatarsArray();
+
+// Gets a random integer between two values, inclusive
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-/** @function selectRandomNoRepeat - Selects random items from an array without duplicates
-*/
-/**
-* @param {string[]} array - array of string elements to choose from
-* @return {string[]} - array of randomly chosen elements
-*/
+// Selects random items from an array without duplicates
 var selectRandomNoRepeat = function (array) {
   var selection = [];
   array.forEach(function (item) {
@@ -66,34 +57,17 @@ var selectRandomNoRepeat = function (array) {
   return selection;
 };
 
-/** @function checkArrayContainsElement - checks if an array contains an elements
-*/
-/**
-* @param {(string[]|number[])} array - array of string or number elements
-* @param {(string|number)} element - element being checked
-* @return {boolean} - true if an array contains an element
-*/
+// Checks if an array contains an element
 var checkArrayContainsElement = function (array, element) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] === element) {
+  array.forEach(function (item) {
+    if (item === element) {
       return true;
     }
-  }
-  return false;
+    return false;
+  });
 };
 
-/** @function generatePosting - creates one posting
-*/
-/**
-* @param {string} avatar - avatar path
-* @param {string} title - posting title
-* @param {string[]} type - array of type names
-* @param {string[]} checkin - array of checkin times
-* @param {string[]} checkout - array of checkout times
-* @param {string[]} features - array of features
-* @param {string[]} photos - array of photo paths
-* @return {Object}
-*/
+// Creates one posting
 var generatePosting = function (avatar, title, type, checkin, checkout, features, photos) {
   var locX = getRandomIntInclusive(minLocX, maxLocX);
   var locY = getRandomIntInclusive(minLocY, maxLocY);
@@ -124,61 +98,45 @@ var generatePosting = function (avatar, title, type, checkin, checkout, features
 
 // Creates an array of posting objects
 var postings = [];
-for (var i = 0; i < postingsNumber; i++) {
-  postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
-}
+var createPostingsArray = function () {
+  for (var i = 0; i < postingsNumber; i++) {
+    postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
+  }
+  return postings;
+};
+
+createPostingsArray();
 
 // Creates variables and gets reference to elements used in pins rendering
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+// map.classList.remove('map--faded');
 var fragment = document.createDocumentFragment();
 
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-/** @function createPin - creates one pin based on the template
-*/
-/**
-* @param {Object} postingData - an object of posting data
-* @return {node}
- */
+// Creates one pin based on the template
 var createPin = function (postingData) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = postingData.location.x - 50 / 2 + 'px';
   pinElement.style.top = postingData.location.y - 70 + 'px';
   pinElement.querySelector('img').src = postingData.author.avatar;
   pinElement.querySelector('img').alt = postingData.offer.title;
+  pinElement.classList.add('map__pin--posting');
   return pinElement;
 };
 
-
-// Creates pins and appends them to fragment element
-postings.forEach(function (item) {
-  fragment.appendChild(createPin(item));
-});
-
-// Renders pins
-mapPins.appendChild(fragment);
-
-
 // Creates variables and gets reference to elements used in pins rendering
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var filters = document.querySelector('.map__filters-container');
+var filtersContainer = document.querySelector('.map__filters-container');
+var filters = document.querySelector('.map__filters');
 
-/** @function createCard - creates one card based on the template
-*/
-/**
-* @param {Object} postingData - data for one posting
-* @return {node}
-*/
+
+// Creates one card based on the template
 var createCard = function (postingData) {
   var cardElement = cardTemplate.cloneNode(true);
 
-  /** @function typeRussian - replaces offer type in English by Russian translation
-  */
-  /**
-  * @return {string}
-  */
+  // Replaces offer type in English by Russian translation
   var typeRussian = function () {
     var offerType = postingData.offer.type;
     if (offerType === 'palace') {
@@ -191,11 +149,7 @@ var createCard = function (postingData) {
     return 'Бунгало';
   };
 
-  /** @function guestTextVariation - word form correction in Russian
-  */
-  /**
-  * @return {string}
-  */
+  // Word form correction in Russian
   var guestTextVariation = function () {
     var guestsNumber = postingData.offer.guests;
     if (guestsNumber === 1) {
@@ -204,11 +158,7 @@ var createCard = function (postingData) {
     return guestsNumber + ' гостей';
   };
 
-  /** @function fillFeaturesList - adds available features
-  */
-  /**
-  * @return {node}
-  */
+  // Adds available features
   var fillFeaturesList = function () {
     var featuresList = cardElement.querySelector('.popup__features');
     var wifi = featuresList.querySelector('.popup__feature--wifi');
@@ -252,11 +202,7 @@ var createCard = function (postingData) {
     return featuresList;
   };
 
-  /** @function fillPhotoGallery - adds more img tags to template and corresponding photo paths
-  */
-  /**
-  * @return {node}
-  */
+  // Adds more img tags to template and corresponding photo paths
   var fillPhotoGallery = function () {
     var photoGallery = cardElement.querySelector('.popup__photos');
     var photoItem0 = photoGallery.querySelector('img');
@@ -289,10 +235,110 @@ var createCard = function (postingData) {
   return cardElement;
 };
 
-// Creates cards and appends them to fragment element
-postings.forEach(function (item) {
-  fragment.appendChild(createCard(item));
-});
+// Ad form - fieldset elements disabled
+var setDisabled = function (element) {
+  element.setAttribute('disabled', '');
+  return element;
+};
+var adForm = document.querySelector('.ad-form');
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
+adFormFieldsets.forEach(setDisabled);
 
-// Renders cards
-map.insertBefore(fragment, filters);
+// Filters form - select elements and fieldset elements disabled
+var filtersSelect = filters.querySelectorAll('select');
+filtersSelect.forEach(setDisabled);
+var filtersFieldset = filters.querySelector('fieldset');
+filtersFieldset.setAttribute('disabled', '');
+
+// Main pin
+var pinMain = document.querySelector('.map__pin--main');
+var address = adForm.querySelector('#address');
+var pinMainLocLeft = pinMain.style.left;
+var pinMainLocTop = pinMain.style.top;
+var pinMainLocLeftNumber = parseInt(pinMainLocLeft.substring(0, pinMainLocLeft.length - 2), 10);
+var pinMainLocTopNumber = parseInt(pinMainLocTop.substring(0, pinMainLocTop.length - 2), 10);
+address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Math.round(pinMainLocTopNumber + PIN_MAIN_SIZE / 2);
+
+// Activates page
+var onPinMainMouseup = function (evt) {
+  var removeDisabled = function (element) {
+    element.removeAttribute('disabled');
+    return element;
+  };
+  adForm.classList.remove('ad-form--disabled');
+  adFormFieldsets.forEach(removeDisabled);
+  filtersSelect.forEach(removeDisabled);
+  filtersFieldset.removeAttribute('disabled');
+  address.value = evt.clientX + ', ' + evt.clientY;
+
+  // Creates pins, adds IDs (equal to pin element index and posting index), registers Event Handler, and appends them to fragment element
+  postings.forEach(function (item, index) {
+    var pin = createPin(item);
+    pin.setAttribute('id', index);
+    pin.addEventListener('mouseup', onPinMouseup);
+    fragment.appendChild(pin);
+  });
+
+  // Renders pins
+  mapPins.appendChild(fragment);
+
+  // Gets reference to pins
+  allPins = map.getElementsByClassName('map__pin--posting');
+
+  // Creates cards, adds class 'hidden', and appends them to fragment element
+  postings.forEach(function (item) {
+    var card = createCard(item);
+    card.classList.add('hidden');
+    fragment.appendChild(card);
+  });
+
+  // Renders cards
+  map.insertBefore(fragment, filtersContainer);
+
+  // Gets reference to cards
+  allCards = map.getElementsByClassName('popup');
+
+  pinMain.removeEventListener('mouseup', onPinMainMouseup);
+};
+
+pinMain.addEventListener('mouseup', onPinMainMouseup);
+
+// Event Handler for any pin
+var onPinMouseup = function (evt) {
+  var postingIndex = evt.currentTarget.id;
+
+  var onPopupEscPress = function (evtKey) {
+    if (evtKey.keyCode === ESC_KEYCODE) {
+      closePopup();
+    }
+  };
+
+  var closePopup = function () {
+    allPins[postingIndex].classList.remove('map__pin--active');
+    allCards[postingIndex].classList.add('hidden');
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
+
+  // Close previous card if open
+  var closeOpenedCard = function () {
+    for (var i = 0; i < allCards.length; i++) {
+      if (!allCards[i].classList.contains('hidden')) {
+        allPins[i].classList.remove('map__pin--active');
+        allCards[i].classList.add('hidden');
+        document.removeEventListener('keydown', onPopupEscPress); // does not work
+      }
+    }
+  };
+
+  closeOpenedCard();
+
+  allPins[postingIndex].classList.add('map__pin--active');
+  allCards[postingIndex].classList.remove('hidden');
+
+  // Handlers to close popup
+  document.addEventListener('keydown', onPopupEscPress);
+  var popupCloseButton = allCards[postingIndex].querySelector('.popup__close');
+  popupCloseButton.addEventListener('click', function () {
+    closePopup();
+  });
+};
