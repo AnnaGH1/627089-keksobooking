@@ -6,9 +6,8 @@ var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var PIN_MAIN_SIZE = 65;
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
+var PIN_MAIN_WIDTH = 65;
+var PIN_MAIN_HEIGHT = 65;
 var minPrice = 1000;
 var maxPrice = 1000000;
 var minRooms = 1;
@@ -264,7 +263,7 @@ var pinMain = document.querySelector('.map__pin--main');
 var address = adForm.querySelector('#address');
 
 // Inactive mode - Address field - coordinates adjusted for main pin shape
-address.value = Math.round(stylePxToNumber(pinMain.style.left) + PIN_MAIN_SIZE / 2) + ', ' + Math.round(stylePxToNumber(pinMain.style.top) + PIN_MAIN_SIZE / 2);
+address.value = Math.round(stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2) + ', ' + Math.round(stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT / 2);
 
 // Page initial state - inactive
 var pageActive = false;
@@ -275,8 +274,7 @@ var onPinMainMousedown = function (evt) {
 
   // Changes pin appearance on mousedown
   pinMain.querySelector('svg').classList.add('hidden');
-  pinMain.querySelector('img').classList.add('hidden');
-  pinMain.classList.remove('map__pin--main');
+  pinMain.querySelector('img').style.top = '-18px';
 
   var startCoords = {
     x: evt.clientX,
@@ -300,11 +298,22 @@ var onPinMainMousedown = function (evt) {
     var offsetLeftCurrent = pinMain.offsetLeft - shift.x;
     var offsetTopCurrent = pinMain.offsetTop - shift.y;
 
-    pinMain.style.left = offsetLeftCurrent + 'px';
-    pinMain.style.top = offsetTopCurrent + 'px';
+    // Limits the area of pin location
+    if (pinMain.offsetLeft < minLocX) {
+      pinMain.style.left = 0 + 'px';
+    } else if (pinMain.offsetLeft > (maxLocX - PIN_MAIN_WIDTH)) {
+      pinMain.style.left = (maxLocX - PIN_MAIN_WIDTH) + 'px';
+    } else if (pinMain.offsetTop < minLocY) {
+      pinMain.style.top = minLocY + 'px';
+    } else if (pinMain.offsetTop > maxLocY) {
+      pinMain.style.top = maxLocY + 'px';
+    } else {
+      pinMain.style.left = offsetLeftCurrent + 'px';
+      pinMain.style.top = offsetTopCurrent + 'px';
+    }
 
     // Address field - Coordinates adjusted for pin shape are updated during mousemove
-    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_HEIGHT));
+    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT));
   };
 
   // Activates form and filters, shows similar postings once
@@ -312,7 +321,7 @@ var onPinMainMousedown = function (evt) {
     upEvt.preventDefault();
 
     // Address field - Coordinates adjusted for pin shape are updated on mouseup
-    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_HEIGHT));
+    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT));
 
     // Util function - Removes attribute 'disabled'
     var removeDisabled = function (element) {
