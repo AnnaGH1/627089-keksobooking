@@ -7,14 +7,16 @@ var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var PIN_MAIN_SIZE = 65;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 var minPrice = 1000;
 var maxPrice = 1000000;
 var minRooms = 1;
 var maxRooms = 5;
 var minGuests = 1;
 var maxGuests = 6;
-var minLocX = 100;
-var maxLocX = document.body.clientWidth - 100;
+var minLocX = 0;
+var maxLocX = document.body.clientWidth;
 var minLocY = 130;
 var maxLocY = 630;
 var postingsNumber = 8;
@@ -236,6 +238,7 @@ var createCard = function (postingData) {
 };
 
 // Ad form - fieldset elements disabled
+// Util function - Sets attribute 'disabled'
 var setDisabled = function (element) {
   element.setAttribute('disabled', '');
   return element;
@@ -250,27 +253,98 @@ filtersSelect.forEach(setDisabled);
 var filtersFieldset = filters.querySelector('fieldset');
 filtersFieldset.setAttribute('disabled', '');
 
-// Main pin
+// Util function - Converts style attribute value from string to number
+var stylePxToNumber = function (stylePx) {
+  var styleNumber = parseInt(stylePx.substring(0, stylePx.length - 2), 10);
+  return styleNumber;
+};
+
+// Inactive mode - Get reference to main pin and address field
 var pinMain = document.querySelector('.map__pin--main');
 var address = adForm.querySelector('#address');
-var pinMainLocLeft = pinMain.style.left;
-var pinMainLocTop = pinMain.style.top;
-var pinMainLocLeftNumber = parseInt(pinMainLocLeft.substring(0, pinMainLocLeft.length - 2), 10);
-var pinMainLocTopNumber = parseInt(pinMainLocTop.substring(0, pinMainLocTop.length - 2), 10);
-address.value = Math.round(pinMainLocLeftNumber + PIN_MAIN_SIZE / 2) + ', ' + Math.round(pinMainLocTopNumber + PIN_MAIN_SIZE / 2);
 
-// Activates page
-var onPinMainMouseup = function (evt) {
-  var removeDisabled = function (element) {
-    element.removeAttribute('disabled');
-    return element;
+// Inactive mode - Address field - coordinates adjusted for main pin shape
+address.value = Math.round(stylePxToNumber(pinMain.style.left) + PIN_MAIN_SIZE / 2) + ', ' + Math.round(stylePxToNumber(pinMain.style.top) + PIN_MAIN_SIZE / 2);
+
+// Page initial state - inactive
+var pageActive = false;
+
+// Event Handler - activates page once; changes location of main pin
+var onPinMainMousedown = function (evt) {
+  evt.preventDefault();
+
+  // Changes pin appearance on mousedown
+  pinMain.querySelector('svg').classList.add('hidden');
+  pinMain.querySelector('img').classList.add('hidden');
+  pinMain.classList.remove('map__pin--main');
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
   };
-  adForm.classList.remove('ad-form--disabled');
-  adFormFieldsets.forEach(removeDisabled);
-  filtersSelect.forEach(removeDisabled);
-  filtersFieldset.removeAttribute('disabled');
-  address.value = evt.clientX + ', ' + evt.clientY;
 
+  // Changes location of main pin
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var offsetLeftCurrent = pinMain.offsetLeft - shift.x;
+    var offsetTopCurrent = pinMain.offsetTop - shift.y;
+
+    pinMain.style.left = offsetLeftCurrent + 'px';
+    pinMain.style.top = offsetTopCurrent + 'px';
+
+    // Address field - Coordinates adjusted for pin shape are updated during mousemove
+    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_HEIGHT));
+  };
+
+  // Activates form and filters, shows similar postings once
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    // Address field - Coordinates adjusted for pin shape are updated on mouseup
+    address.value = Math.round((stylePxToNumber(pinMain.style.left) + PIN_WIDTH / 2)) + ', ' + Math.round((stylePxToNumber(pinMain.style.top) + PIN_HEIGHT));
+
+    // Util function - Removes attribute 'disabled'
+    var removeDisabled = function (element) {
+      element.removeAttribute('disabled');
+      return element;
+    };
+
+    adForm.classList.remove('ad-form--disabled');
+    adFormFieldsets.forEach(removeDisabled);
+    filtersSelect.forEach(removeDisabled);
+    removeDisabled(filtersFieldset);
+
+    if (!pageActive) {
+      showSimilarPostings();
+    }
+
+    // Change page state to active
+    pageActive = true;
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+// Event Handler registered on main pin
+pinMain.addEventListener('mousedown', onPinMainMousedown);
+
+// Shows other postings
+var showSimilarPostings = function () {
   // Creates pins, adds IDs (equal to pin element index and posting index), registers Event Handler, and appends them to fragment element
   postings.forEach(function (item, index) {
     var pin = createPin(item);
@@ -297,11 +371,7 @@ var onPinMainMouseup = function (evt) {
 
   // Gets reference to cards
   allCards = map.getElementsByClassName('popup');
-
-  pinMain.removeEventListener('mouseup', onPinMainMouseup);
 };
-
-pinMain.addEventListener('mouseup', onPinMainMouseup);
 
 // Event Handler for any pin
 var onPinMouseup = function (evt) {
