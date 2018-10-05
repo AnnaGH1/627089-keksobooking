@@ -1,7 +1,16 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
+
   window.util = {
+    // Perform an action on Esc keyboard event
+    isEscEvent: function (evt, action) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        action();
+      }
+    },
+
     // Checks if an array contains an element
     checkArrayContainsElement: function (array, element) {
       array.forEach(function (item) {

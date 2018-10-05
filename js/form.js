@@ -1,11 +1,8 @@
 'use strict';
 
 (function () {
-  var adForm = document.querySelector('.ad-form'); // defined in map.js
-
-
   // Form validation - title
-  var adTitle = adForm.elements.title;
+  var adTitle = window.sharedVariables.adForm.elements.title;
   adTitle.addEventListener('invalid', function () {
     if (adTitle.validity.tooShort) {
       adTitle.setCustomValidity('Минимальная длина заголовка 30 символов');
@@ -19,8 +16,8 @@
   });
 
   // Form validation - price and property type
-  var adPrice = adForm.elements.price;
-  var propertyType = adForm.elements.type;
+  var adPrice = window.sharedVariables.adForm.elements.price;
+  var propertyType = window.sharedVariables.adForm.elements.type;
   adPrice.addEventListener('invalid', function () {
     if (adPrice.validity.rangeOverflow) {
       adPrice.setCustomValidity('Максимальная цена 1 000 000');
@@ -47,10 +44,10 @@
   propertyType.addEventListener('change', setMinPriceForEachType);
 
   // Form validation - check-in/check-out times
-  var roomsSelect = adForm.elements.rooms;
-  var guestsSelect = adForm.elements.capacity;
-  var checkIn = adForm.elements.timein;
-  var checkOut = adForm.elements.timeout;
+  var roomsSelect = window.sharedVariables.adForm.elements.rooms;
+  var guestsSelect = window.sharedVariables.adForm.elements.capacity;
+  var checkIn = window.sharedVariables.adForm.elements.timein;
+  var checkOut = window.sharedVariables.adForm.elements.timeout;
 
   var matchCheckOut = function () {
     if (checkIn.value === '12:00') {
