@@ -13,12 +13,12 @@
 
     // Checks if an array contains an element
     checkArrayContainsElement: function (array, element) {
-      array.forEach(function (item) {
-        if (item === element) {
+      for (var i = 0; i < array.length; i++) {
+        if (array[i] === element) {
           return true;
         }
-        return false;
-      });
+      }
+      return false;
     },
 
     // Gets a random integer between two values, inclusive
@@ -61,7 +61,7 @@
     // Hides element
     hideElement: function (element) {
       element.style.display = 'none';
-      // return element;
+      return element;
     }
   };
 })();

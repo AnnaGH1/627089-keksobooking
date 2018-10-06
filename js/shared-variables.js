@@ -9,7 +9,6 @@
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var pinMain = document.querySelector('.map__pin--main');
 
-
   window.sharedVariables = {
     filtersContainer: filtersContainer,
     filters: filters,

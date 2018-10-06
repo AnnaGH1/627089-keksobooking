@@ -53,28 +53,22 @@
           return false;
         } else {
           if (!checkWiFi) {
-            // window.util.hideElement(wifi);
-            wifi.style.display = 'none';
+            window.util.hideElement(wifi);
           }
           if (!checkDishwasher) {
-            // window.util.hideElement(dishwasher);
-            dishwasher.style.display = 'none';
+            window.util.hideElement(dishwasher);
           }
           if (!checkParking) {
-            // window.util.hideElement(parking);
-            parking.style.display = 'none';
+            window.util.hideElement(parking);
           }
           if (!checkWasher) {
-            // window.util.hideElement(washer);
-            washer.style.display = 'none';
+            window.util.hideElement(washer);
           }
           if (!checkElevator) {
-            // window.util.hideElement(elevator);
-            elevator.style.display = 'none';
+            window.util.hideElement(elevator);
           }
           if (!checkConditioner) {
-            // window.util.hideElement(conditioner);
-            conditioner.style.display = 'none';
+            window.util.hideElement(conditioner);
           }
         }
         return featuresList;
@@ -107,7 +101,6 @@
       fillFeaturesList();
       cardElement.querySelector('.popup__description').textContent = postingData.offer.description;
       fillPhotoGallery();
-
       cardElement.querySelector('.popup__avatar').src = postingData.author.avatar;
 
       return cardElement;

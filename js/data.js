@@ -7,20 +7,24 @@
   var CHECKOUT = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-  var MIN_PRICE = 1000;
-  var MAX_PRICE = 1000000;
-  var MIN_ROOMS = 1;
-  var MAX_ROOMS = 5;
-  var MIN_GUESTS = 1;
-  var MAX_GUESTS = 6;
+  var PRICE = {
+    'min': 1000,
+    'max': 1000000
+  };
+
+  var PROPERTY_CAPACITY = {
+    'minRooms': 1,
+    'maxRooms': 5,
+    'minGuests': 1,
+    'maxGuests': 6
+  };
   var LOCATION = {
-    MIN_X: 0,
-    MAX_X: document.body.clientWidth,
-    MIN_Y: 130,
-    MAX_Y: 630
+    'minX': 0,
+    'maxX': document.body.clientWidth,
+    'minY': 130,
+    'maxY': 630
   };
   var postingsNumber = 8;
-
 
   // Creates one avatar path
   var generateAvatar = function (avatarNumber) {
@@ -41,8 +45,8 @@
 
   // Creates one posting
   var generatePosting = function (avatar, title, type, checkin, checkout, features, photos) {
-    var locX = window.util.getRandomIntInclusive(LOCATION.MIN_X, LOCATION.MAX_X);
-    var locY = window.util.getRandomIntInclusive(LOCATION.MIN_Y, LOCATION.MAX_Y);
+    var locX = window.util.getRandomIntInclusive(LOCATION.minX, LOCATION.maxX);
+    var locY = window.util.getRandomIntInclusive(LOCATION.minY, LOCATION.maxY);
     var posting = {
       author: {
         avatar: avatar
@@ -50,10 +54,10 @@
       offer: {
         title: title,
         address: locX.toString(10) + ', ' + locY.toString(10),
-        price: window.util.getRandomIntInclusive(MIN_PRICE, MAX_PRICE),
+        price: window.util.getRandomIntInclusive(PRICE.min, PRICE.max),
         type: type[window.util.getRandomIntInclusive(0, type.length - 1)],
-        rooms: window.util.getRandomIntInclusive(MIN_ROOMS, MAX_ROOMS),
-        guests: window.util.getRandomIntInclusive(MIN_GUESTS, MAX_GUESTS),
+        rooms: window.util.getRandomIntInclusive(PROPERTY_CAPACITY.minRooms, PROPERTY_CAPACITY.maxRooms),
+        guests: window.util.getRandomIntInclusive(PROPERTY_CAPACITY.minGuests, PROPERTY_CAPACITY.maxGuests),
         checkin: checkin[window.util.getRandomIntInclusive(0, checkin.length - 1)],
         checkout: checkout[window.util.getRandomIntInclusive(0, checkout.length - 1)],
         features: window.util.selectRandomNoRepeat(features),

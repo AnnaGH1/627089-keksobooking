@@ -1,10 +1,12 @@
 'use strict';
 
 (function () {
-  var PIN_MAIN_WIDTH = window.sharedVariables.pinMain.offsetWidth;
-  var PIN_MAIN_HEIGHT = window.sharedVariables.pinMain.offsetHeight;
-  var PIN_MAIN_WIDTH_HALF = PIN_MAIN_WIDTH / 2;
-  var PIN_MAIN_HEIGHT_HALF = PIN_MAIN_HEIGHT / 2;
+  var PIN_MAIN = {
+    'width': window.sharedVariables.pinMain.offsetWidth,
+    'height': window.sharedVariables.pinMain.offsetHeight,
+    'widthHalf': window.sharedVariables.pinMain.offsetWidth / 2,
+    'heightHalf': window.sharedVariables.pinMain.offsetHeight / 2
+  };
 
   // Reference to elements used in page activation
   var map = document.querySelector('.map');
@@ -24,7 +26,7 @@
   window.sharedVariables.adFormFieldsets.forEach(window.util.setDisabled);
 
   // Inactive mode - Address field - coordinates adjusted for main pin shape
-  address.value = Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF) + ', ' + Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT_HALF);
+  address.value = Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf) + ', ' + Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.heightHalf);
 
   // Event Handler - activates page
   var onPinMainMousedown = function (evt) {
@@ -53,21 +55,21 @@
       var offsetTopCurrent = window.sharedVariables.pinMain.offsetTop - shift.y;
 
       // Limits the area of pin location
-      if (window.sharedVariables.pinMain.offsetLeft < window.data.LOCATION.MIN_X) {
+      if (window.sharedVariables.pinMain.offsetLeft < window.data.LOCATION.minX) {
         window.sharedVariables.pinMain.style.left = 0 + 'px';
-      } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.MAX_X - PIN_MAIN_WIDTH)) {
-        window.sharedVariables.pinMain.style.left = (window.data.LOCATION.MAX_X - PIN_MAIN_WIDTH) + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop < window.data.LOCATION.MIN_Y) {
-        window.sharedVariables.pinMain.style.top = window.data.LOCATION.MIN_Y + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.MAX_Y - PIN_MAIN_HEIGHT)) {
-        window.sharedVariables.pinMain.style.top = (window.data.LOCATION.MAX_Y - PIN_MAIN_HEIGHT) + 'px';
+      } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.maxX - PIN_MAIN.width)) {
+        window.sharedVariables.pinMain.style.left = (window.data.LOCATION.maxX - PIN_MAIN.width) + 'px';
+      } else if (window.sharedVariables.pinMain.offsetTop < window.data.LOCATION.minY) {
+        window.sharedVariables.pinMain.style.top = window.data.LOCATION.minY + 'px';
+      } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.maxY - PIN_MAIN.height)) {
+        window.sharedVariables.pinMain.style.top = (window.data.LOCATION.maxY - PIN_MAIN.height) + 'px';
       } else {
         window.sharedVariables.pinMain.style.left = offsetLeftCurrent + 'px';
         window.sharedVariables.pinMain.style.top = offsetTopCurrent + 'px';
       }
 
       // Address field - Coordinates adjusted for pin shape are updated during mousemove
-      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT));
+      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.height));
     };
 
     // Activates form and filters, shows similar postings once
@@ -75,7 +77,7 @@
       upEvt.preventDefault();
 
       // Address field - Coordinates adjusted for pin shape are updated on mouseup
-      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT));
+      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.height));
 
       map.classList.remove('map--faded');
       window.sharedVariables.adForm.classList.remove('ad-form--disabled');
