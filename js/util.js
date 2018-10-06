@@ -56,6 +56,12 @@
     stylePxToNumber: function (stylePx) {
       var styleNumber = parseInt(stylePx.substring(0, stylePx.length - 2), 10);
       return styleNumber;
+    },
+
+    // Hides element
+    hideElement: function (element) {
+      element.style.display = 'none';
+      // return element;
     }
   };
 })();

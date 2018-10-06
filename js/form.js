@@ -1,6 +1,27 @@
 'use strict';
 
 (function () {
+  var PROPERTY_PRICE_MIN = {
+    'palace': 10000,
+    'house': 5000,
+    'flat': 1000,
+    'bungalo': 0
+  };
+
+  var ROOMS_NUMBER = {
+    'oneRoom': '1',
+    'twoRooms': '2',
+    'threeRooms': '3',
+    'hundredRooms': '100'
+  };
+
+  var GUESTS_NUMBER = {
+    'oneGuest': '1',
+    'twoGuests': '2',
+    'threeGuests': '3',
+    'noGuests': '0'
+  };
+
   // Form validation - title
   var adTitle = window.sharedVariables.adForm.elements.title;
   adTitle.addEventListener('invalid', function () {
@@ -28,16 +49,16 @@
 
   var setMinPriceForEachType = function () {
     if (propertyType.value === 'palace') {
-      adPrice.min = '10000';
-      adPrice.placeholder = '10000';
+      adPrice.min = PROPERTY_PRICE_MIN.palace;
+      adPrice.placeholder = PROPERTY_PRICE_MIN.palace;
     } else if (propertyType.value === 'house') {
-      adPrice.min = '5000';
-      adPrice.placeholder = '5000';
+      adPrice.min = PROPERTY_PRICE_MIN.house;
+      adPrice.placeholder = PROPERTY_PRICE_MIN.house;
     } else if (propertyType.value === 'flat') {
-      adPrice.min = '1000';
-      adPrice.placeholder = '1000';
+      adPrice.min = PROPERTY_PRICE_MIN.flat;
+      adPrice.placeholder = PROPERTY_PRICE_MIN.flat;
     } else {
-      adPrice.placeholder = '0';
+      adPrice.placeholder = PROPERTY_PRICE_MIN.bungalo;
     }
   };
 
@@ -74,13 +95,13 @@
 
   // Form validation - rooms capacity
   var checkRoomsCapacity = function () {
-    if (roomsSelect.value === '1' && guestsSelect.value !== '1') {
+    if (roomsSelect.value === ROOMS_NUMBER.oneRoom && guestsSelect.value !== GUESTS_NUMBER.oneGuest) {
       guestsSelect.setCustomValidity('Не больше 1 гостя');
-    } else if ((roomsSelect.value === '2' && guestsSelect.value === '3') || (roomsSelect.value === '2' && guestsSelect.value === '0')) {
+    } else if ((roomsSelect.value === ROOMS_NUMBER.twoRooms && guestsSelect.value === GUESTS_NUMBER.threeGuests) || (roomsSelect.value === ROOMS_NUMBER.twoRooms && guestsSelect.value === GUESTS_NUMBER.noGuests)) {
       guestsSelect.setCustomValidity('Не больше 2 гостей');
-    } else if (roomsSelect.value === '3' && guestsSelect.value === '0') {
+    } else if (roomsSelect.value === ROOMS_NUMBER.threeRooms && guestsSelect.value === GUESTS_NUMBER.noGuests) {
       guestsSelect.setCustomValidity('Не больше 3 гостей');
-    } else if (roomsSelect.value === '100' && guestsSelect.value !== '0') {
+    } else if (roomsSelect.value === ROOMS_NUMBER.hundredRooms && guestsSelect.value !== GUESTS_NUMBER.noGuests) {
       guestsSelect.setCustomValidity('Не для гостей');
     } else {
       guestsSelect.setCustomValidity('');

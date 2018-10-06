@@ -1,18 +1,20 @@
 'use strict';
 
 (function () {
-  var PIN_MAIN_WIDTH = 65;
-  var PIN_MAIN_HEIGHT = 65;
+  var PIN_MAIN_WIDTH = window.sharedVariables.pinMain.offsetWidth;
+  var PIN_MAIN_HEIGHT = window.sharedVariables.pinMain.offsetHeight;
+  var PIN_MAIN_WIDTH_HALF = PIN_MAIN_WIDTH / 2;
+  var PIN_MAIN_HEIGHT_HALF = PIN_MAIN_HEIGHT / 2;
 
   // Reference to elements used in page activation
   var map = document.querySelector('.map');
   var fragment = document.createDocumentFragment();
   var mapPins = document.querySelector('.map__pins');
-  var pinMain = document.querySelector('.map__pin--main');
   var address = window.sharedVariables.adForm.querySelector('#address');
   var allPins;
   var allCards;
   var pageActive = false;
+
 
   // Inactive mode - Filters - disabled
   window.sharedVariables.filtersSelect.forEach(window.util.setDisabled);
@@ -22,7 +24,7 @@
   window.sharedVariables.adFormFieldsets.forEach(window.util.setDisabled);
 
   // Inactive mode - Address field - coordinates adjusted for main pin shape
-  address.value = Math.round(window.util.stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2) + ', ' + Math.round(window.util.stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT / 2);
+  address.value = Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF) + ', ' + Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT_HALF);
 
   // Event Handler - activates page
   var onPinMainMousedown = function (evt) {
@@ -47,25 +49,25 @@
         y: moveEvt.clientY
       };
 
-      var offsetLeftCurrent = pinMain.offsetLeft - shift.x;
-      var offsetTopCurrent = pinMain.offsetTop - shift.y;
+      var offsetLeftCurrent = window.sharedVariables.pinMain.offsetLeft - shift.x;
+      var offsetTopCurrent = window.sharedVariables.pinMain.offsetTop - shift.y;
 
       // Limits the area of pin location
-      if (pinMain.offsetLeft < window.data.minLocX) {
-        pinMain.style.left = 0 + 'px';
-      } else if (pinMain.offsetLeft > (window.data.maxLocX - PIN_MAIN_WIDTH)) {
-        pinMain.style.left = (window.data.maxLocX - PIN_MAIN_WIDTH) + 'px';
-      } else if (pinMain.offsetTop < window.data.minLocY) {
-        pinMain.style.top = window.data.minLocY + 'px';
-      } else if (pinMain.offsetTop > window.data.maxLocY) {
-        pinMain.style.top = window.data.maxLocY + 'px';
+      if (window.sharedVariables.pinMain.offsetLeft < window.data.LOCATION.MIN_X) {
+        window.sharedVariables.pinMain.style.left = 0 + 'px';
+      } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.MAX_X - PIN_MAIN_WIDTH)) {
+        window.sharedVariables.pinMain.style.left = (window.data.LOCATION.MAX_X - PIN_MAIN_WIDTH) + 'px';
+      } else if (window.sharedVariables.pinMain.offsetTop < window.data.LOCATION.MIN_Y) {
+        window.sharedVariables.pinMain.style.top = window.data.LOCATION.MIN_Y + 'px';
+      } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.MAX_Y - PIN_MAIN_HEIGHT)) {
+        window.sharedVariables.pinMain.style.top = (window.data.LOCATION.MAX_Y - PIN_MAIN_HEIGHT) + 'px';
       } else {
-        pinMain.style.left = offsetLeftCurrent + 'px';
-        pinMain.style.top = offsetTopCurrent + 'px';
+        window.sharedVariables.pinMain.style.left = offsetLeftCurrent + 'px';
+        window.sharedVariables.pinMain.style.top = offsetTopCurrent + 'px';
       }
 
       // Address field - Coordinates adjusted for pin shape are updated during mousemove
-      address.value = Math.round((window.util.stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2)) + ', ' + Math.round((window.util.stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT));
+      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT));
     };
 
     // Activates form and filters, shows similar postings once
@@ -73,7 +75,7 @@
       upEvt.preventDefault();
 
       // Address field - Coordinates adjusted for pin shape are updated on mouseup
-      address.value = Math.round((window.util.stylePxToNumber(pinMain.style.left) + PIN_MAIN_WIDTH / 2)) + ', ' + Math.round((window.util.stylePxToNumber(pinMain.style.top) + PIN_MAIN_HEIGHT));
+      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN_WIDTH_HALF)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN_HEIGHT));
 
       map.classList.remove('map--faded');
       window.sharedVariables.adForm.classList.remove('ad-form--disabled');
@@ -165,5 +167,5 @@
   };
 
   // Event Handler registered on main pin
-  pinMain.addEventListener('mousedown', onPinMainMousedown);
+  window.sharedVariables.pinMain.addEventListener('mousedown', onPinMainMousedown);
 })();

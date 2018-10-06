@@ -53,21 +53,27 @@
           return false;
         } else {
           if (!checkWiFi) {
+            // window.util.hideElement(wifi);
             wifi.style.display = 'none';
           }
           if (!checkDishwasher) {
+            // window.util.hideElement(dishwasher);
             dishwasher.style.display = 'none';
           }
           if (!checkParking) {
+            // window.util.hideElement(parking);
             parking.style.display = 'none';
           }
           if (!checkWasher) {
+            // window.util.hideElement(washer);
             washer.style.display = 'none';
           }
           if (!checkElevator) {
+            // window.util.hideElement(elevator);
             elevator.style.display = 'none';
           }
           if (!checkConditioner) {
+            // window.util.hideElement(conditioner);
             conditioner.style.display = 'none';
           }
         }

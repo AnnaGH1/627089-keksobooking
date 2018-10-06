@@ -7,22 +7,24 @@
   var CHECKOUT = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-  var minPrice = 1000;
-  var maxPrice = 1000000;
-  var minRooms = 1;
-  var maxRooms = 5;
-  var minGuests = 1;
-  var maxGuests = 6;
-  var minLocX = 0;
-  var maxLocX = document.body.clientWidth;
-  var minLocY = 130;
-  var maxLocY = 630;
+  var MIN_PRICE = 1000;
+  var MAX_PRICE = 1000000;
+  var MIN_ROOMS = 1;
+  var MAX_ROOMS = 5;
+  var MIN_GUESTS = 1;
+  var MAX_GUESTS = 6;
+  var LOCATION = {
+    MIN_X: 0,
+    MAX_X: document.body.clientWidth,
+    MIN_Y: 130,
+    MAX_Y: 630
+  };
   var postingsNumber = 8;
 
 
   // Creates one avatar path
   var generateAvatar = function (avatarNumber) {
-    var newAvatar = 'img/avatars/user' + 0 + avatarNumber + '.png';
+    var newAvatar = 'img/avatars/user0' + avatarNumber + '.png';
     return newAvatar;
   };
 
@@ -39,8 +41,8 @@
 
   // Creates one posting
   var generatePosting = function (avatar, title, type, checkin, checkout, features, photos) {
-    var locX = window.util.getRandomIntInclusive(minLocX, maxLocX);
-    var locY = window.util.getRandomIntInclusive(minLocY, maxLocY);
+    var locX = window.util.getRandomIntInclusive(LOCATION.MIN_X, LOCATION.MAX_X);
+    var locY = window.util.getRandomIntInclusive(LOCATION.MIN_Y, LOCATION.MAX_Y);
     var posting = {
       author: {
         avatar: avatar
@@ -48,10 +50,10 @@
       offer: {
         title: title,
         address: locX.toString(10) + ', ' + locY.toString(10),
-        price: window.util.getRandomIntInclusive(minPrice, maxPrice),
+        price: window.util.getRandomIntInclusive(MIN_PRICE, MAX_PRICE),
         type: type[window.util.getRandomIntInclusive(0, type.length - 1)],
-        rooms: window.util.getRandomIntInclusive(minRooms, maxRooms),
-        guests: window.util.getRandomIntInclusive(minGuests, maxGuests),
+        rooms: window.util.getRandomIntInclusive(MIN_ROOMS, MAX_ROOMS),
+        guests: window.util.getRandomIntInclusive(MIN_GUESTS, MAX_GUESTS),
         checkin: checkin[window.util.getRandomIntInclusive(0, checkin.length - 1)],
         checkout: checkout[window.util.getRandomIntInclusive(0, checkout.length - 1)],
         features: window.util.selectRandomNoRepeat(features),
@@ -78,10 +80,7 @@
   createPostingsArray();
 
   window.data = {
-    minLocX: minLocX,
-    maxLocX: maxLocX,
-    minLocY: minLocY,
-    maxLocY: maxLocY,
+    LOCATION: LOCATION,
     postings: postings
   };
 })();
