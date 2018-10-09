@@ -1,6 +1,27 @@
 'use strict';
 
 (function () {
+  var postings;
+
+  var onDataLoad = function (response) {
+    postings = JSON.parse(response);
+    console.log(postings);
+    return postings; // export to global scope?
+  };
+
+  var onDataError = function (loadError) {
+    throw new Error(loadError);
+  };
+
+  window.backend.load(onDataLoad, onDataError);
+
+
+  window.data = {
+    LOCATION: LOCATION,
+    postings: postings // not visible in global scope
+  };
+
+
   var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
   var TYPE = ['palace', 'flat', 'house', 'bungalo'];
   var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -73,7 +94,7 @@
   };
 
   // Creates an array of posting objects
-  var postings = [];
+  // var postings = [];
   var createPostingsArray = function () {
     for (var i = 0; i < postingsNumber; i++) {
       postings.push(generatePosting(avatars[i], TITLE[i], TYPE, CHECKIN, CHECKOUT, FEATURES, PHOTOS));
@@ -81,10 +102,6 @@
     return postings;
   };
 
-  createPostingsArray();
+  // createPostingsArray();
 
-  window.data = {
-    LOCATION: LOCATION,
-    postings: postings
-  };
 })();
