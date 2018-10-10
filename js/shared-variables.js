@@ -7,6 +7,7 @@
   var filtersFieldset = filters.querySelector('fieldset');
   var adForm = document.querySelector('.ad-form');
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
   var pinMain = document.querySelector('.map__pin--main');
 
   window.sharedVariables = {
@@ -16,6 +17,7 @@
     filtersFieldset: filtersFieldset,
     adForm: adForm,
     adFormFieldsets: adFormFieldsets,
+    adFormReset: adFormReset,
     pinMain: pinMain
   };
 })();

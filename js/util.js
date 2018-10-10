@@ -2,8 +2,17 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+
 
   window.util = {
+    // Perform an action on Enter keyboard event
+    isEnterEvent: function (evt, action) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        action();
+      }
+    },
+
     // Perform an action on Esc keyboard event
     isEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
@@ -61,6 +70,12 @@
     // Hides element
     hideElement: function (element) {
       element.style.display = 'none';
+      return element;
+    },
+
+    // Removes element
+    removeElement: function (element) {
+      element.remove();
       return element;
     }
   };

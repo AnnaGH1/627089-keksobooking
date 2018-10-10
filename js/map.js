@@ -17,16 +17,51 @@
   var allCards;
   var pageActive = false;
 
+  // Inactive mode - map, form, filters
+  var setInactiveMode = function () {
+    // Inactive mode - map
+    map.classList.add('map--faded');
 
-  // Inactive mode - Filters - disabled
-  window.sharedVariables.filtersSelect.forEach(window.util.setDisabled);
-  window.sharedVariables.filtersFieldset.setAttribute('disabled', '');
+    // Inactive mode - form
+    window.sharedVariables.adForm.classList.add('ad-form--disabled');
+    window.sharedVariables.adFormFieldsets.forEach(window.util.setDisabled);
 
-  // Inactive mode - Ad form - disabled
-  window.sharedVariables.adFormFieldsets.forEach(window.util.setDisabled);
+    // Inactive mode - filters
+    window.sharedVariables.filtersSelect.forEach(window.util.setDisabled);
+    window.util.setDisabled(window.sharedVariables.filtersFieldset);
 
-  // Inactive mode - Address field - coordinates adjusted for main pin shape
-  address.value = Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf) + ', ' + Math.round(window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.heightHalf);
+    // Inactive mode - Main pin - default location
+    var resetLeft = '570px';
+    var resetTop = '375px';
+    window.sharedVariables.pinMain.style.left = resetLeft;
+    window.sharedVariables.pinMain.style.top = resetTop;
+
+    // Inactive mode - Address field - coordinates adjusted for main pin shape
+    address.value = Math.round(window.util.stylePxToNumber(resetLeft) + PIN_MAIN.widthHalf) + ', ' + Math.round(window.util.stylePxToNumber(resetTop) + PIN_MAIN.heightHalf);
+  };
+
+  setInactiveMode();
+
+  // Active mode - map, form, filters
+  var setActiveMode = function () {
+    // Active mode - map
+    map.classList.remove('map--faded');
+    // Active mode - form
+    window.sharedVariables.adForm.classList.remove('ad-form--disabled');
+    window.sharedVariables.adFormFieldsets.forEach(window.util.removeDisabled);
+    // Active mode - filters
+    window.sharedVariables.filtersSelect.forEach(window.util.removeDisabled);
+    window.util.removeDisabled(window.sharedVariables.filtersFieldset);
+  };
+
+  // Remove pins and cards
+  var removePostings = function () {
+    var postingsNumber = window.data.postings.length;
+    for (var i = postingsNumber - 1; i >= 0; i--) {
+      allPins[i].remove();
+      allCards[i].remove();
+    }
+  };
 
   // Event Handler - activates page
   var onPinMainMousedown = function (evt) {
@@ -79,18 +114,15 @@
       // Address field - Coordinates adjusted for pin shape are updated on mouseup
       address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.height));
 
-      map.classList.remove('map--faded');
-      window.sharedVariables.adForm.classList.remove('ad-form--disabled');
-      window.sharedVariables.adFormFieldsets.forEach(window.util.removeDisabled);
-      window.sharedVariables.filtersSelect.forEach(window.util.removeDisabled);
-      window.util.removeDisabled(window.sharedVariables.filtersFieldset);
+      setActiveMode();
 
-      if (!pageActive) {
+      if (!window.map.pageActive) {
         showSimilarPostings();
       }
 
       // Change page state to active
       pageActive = true;
+      window.map.pageActive = pageActive;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -115,6 +147,7 @@
 
     // Gets reference to pins
     allPins = map.getElementsByClassName('map__pin--posting');
+    window.map.allPins = allPins;
 
     // Creates cards, adds class 'hidden', and appends them to fragment element
     window.data.postings.forEach(function (item) {
@@ -128,6 +161,7 @@
 
     // Gets reference to cards
     allCards = map.getElementsByClassName('popup');
+    window.map.allCards = allCards;
   };
 
   // Event Handler - opens a card corresponding to the pin
@@ -170,4 +204,13 @@
 
   // Event Handler registered on main pin
   window.sharedVariables.pinMain.addEventListener('mousedown', onPinMainMousedown);
+
+  window.map = {
+    pageActive: pageActive,
+    allPins: allPins,
+    allCards: allCards,
+    setInactiveMode: setInactiveMode,
+    setActiveMode: setActiveMode,
+    removePostings: removePostings
+  };
 })();
