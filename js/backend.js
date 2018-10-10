@@ -35,6 +35,16 @@
 
       });
 
+      request.addEventListener('error', function () {
+        onError('Произошла ошибка соединения');
+      });
+
+      request.addEventListener('timeout', function () {
+        onError('Запрос не успел выполниться за ' + request.timeout + 'мс');
+      });
+
+      request.timeout = 10000;
+
       request.open('GET', URL);
       request.send();
     },
