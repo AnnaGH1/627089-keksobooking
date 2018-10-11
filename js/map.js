@@ -117,7 +117,7 @@
       setActiveMode();
 
       if (!window.map.pageActive) {
-        showSimilarPostings();
+        showPostings(window.data.postings);
       }
 
       // Change page state to active
@@ -132,10 +132,10 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  // Shows other postings
-  var showSimilarPostings = function () {
+  // Shows postings
+  var showPostings = function (array) {
     // Creates pins, adds IDs (equal to pin element index and posting index), registers Event Handler, and appends them to fragment element
-    window.data.postings.forEach(function (item, index) {
+    array.forEach(function (item, index) {
       var pin = window.pin.createPin(item);
       pin.setAttribute('id', index);
       pin.addEventListener('mouseup', onPinMouseup);
@@ -150,7 +150,7 @@
     window.map.allPins = allPins;
 
     // Creates cards, adds class 'hidden', and appends them to fragment element
-    window.data.postings.forEach(function (item) {
+    array.forEach(function (item) {
       var card = window.card.createCard(item);
       card.classList.add('hidden');
       fragment.appendChild(card);
