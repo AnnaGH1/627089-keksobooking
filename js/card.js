@@ -48,8 +48,9 @@
         var checkElevator = window.util.checkArrayContainsElement(featuresAvailable, 'elevator');
         var checkConditioner = window.util.checkArrayContainsElement(featuresAvailable, 'conditioner');
 
+        // Hide section if no features available
         if (featuresAvailable.length === 0) {
-          featuresList.style.display = 'none';
+          window.util.hideElement(featuresList);
           return false;
         } else {
           if (!checkWiFi) {
@@ -77,6 +78,12 @@
       // Adds more img tags to template and corresponding photo paths
       var fillPhotoGallery = function () {
         var photoGallery = cardElement.querySelector('.popup__photos');
+        var photosAvailable = postingData.offer.features;
+
+        // Hide section if no photos available
+        if (photosAvailable.length === 0) {
+          window.util.hideElement(photoGallery);
+        }
         var photoItem0 = photoGallery.querySelector('img');
         photoItem0.src = postingData.offer.photos[0];
         photoGallery.appendChild(photoItem0);
