@@ -50,29 +50,39 @@
 
         // Hide section if no features available
         if (featuresAvailable.length === 0) {
-          window.util.hideElement(featuresList);
+          window.util.hideElementDisplayNone(featuresList);
           return false;
         } else {
           if (!checkWiFi) {
-            window.util.hideElement(wifi);
+            window.util.hideElementDisplayNone(wifi);
           }
           if (!checkDishwasher) {
-            window.util.hideElement(dishwasher);
+            window.util.hideElementDisplayNone(dishwasher);
           }
           if (!checkParking) {
-            window.util.hideElement(parking);
+            window.util.hideElementDisplayNone(parking);
           }
           if (!checkWasher) {
-            window.util.hideElement(washer);
+            window.util.hideElementDisplayNone(washer);
           }
           if (!checkElevator) {
-            window.util.hideElement(elevator);
+            window.util.hideElementDisplayNone(elevator);
           }
           if (!checkConditioner) {
-            window.util.hideElement(conditioner);
+            window.util.hideElementDisplayNone(conditioner);
           }
         }
         return featuresList;
+      };
+
+      // Add description if available
+      var addDescription = function () {
+        var description = cardElement.querySelector('.popup__description');
+        if (description.textContent === '') {
+          window.util.hideElementDisplayNone(description);
+        }
+        description.textContent = postingData.offer.description;
+        return description;
       };
 
       // Adds more img tags to template and corresponding photo paths
@@ -82,7 +92,7 @@
 
         // Hide section if no photos available
         if (photosAvailable.length === 0) {
-          window.util.hideElement(photoGallery);
+          window.util.hideElementDisplayNone(photoGallery);
         }
         var photoItem0 = photoGallery.querySelector('img');
         photoItem0.src = postingData.offer.photos[0];
@@ -106,7 +116,7 @@
       cardElement.querySelector('.popup__text--capacity').textContent = postingData.offer.rooms + ' комнаты для ' + guestTextVariation();
       cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + postingData.offer.checkin + ', выезд до ' + postingData.offer.checkout;
       fillFeaturesList();
-      cardElement.querySelector('.popup__description').textContent = postingData.offer.description;
+      addDescription();
       fillPhotoGallery();
       cardElement.querySelector('.popup__avatar').src = postingData.author.avatar;
 

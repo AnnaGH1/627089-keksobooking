@@ -68,7 +68,7 @@
     },
 
     // Hides element
-    hideElement: function (element) {
+    hideElementDisplayNone: function (element) {
       element.style.display = 'none';
       return element;
     },

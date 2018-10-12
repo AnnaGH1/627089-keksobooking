@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var pageMain = document.querySelector('main');
   var filtersContainer = document.querySelector('.map__filters-container');
   var filters = document.querySelector('.map__filters');
   var filtersSelect = filters.querySelectorAll('select');
@@ -11,6 +12,7 @@
   var pinMain = document.querySelector('.map__pin--main');
 
   window.sharedVariables = {
+    pageMain: pageMain,
     filtersContainer: filtersContainer,
     filters: filters,
     filtersSelect: filtersSelect,
