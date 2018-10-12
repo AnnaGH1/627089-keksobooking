@@ -54,14 +54,18 @@
     window.util.removeDisabled(window.sharedVariables.filtersFieldset);
   };
 
-  // Remove pins and cards
+  // Remove pins and cards currently rendered
   var removePostings = function () {
-    var postingsNumber = window.data.postings.length;
-    for (var i = postingsNumber - 1; i >= 0; i--) {
-      allPins[i].remove();
-      allCards[i].remove();
+    var allPinsCurrent = document.getElementsByClassName('map__pin--posting');
+    var allCardsCurrent = document.getElementsByClassName('popup');
+    var postingsNumCurrent = allPinsCurrent.length;
+
+    for (var i = postingsNumCurrent - 1; i >= 0; i--) {
+      allPinsCurrent[i].remove();
+      allCardsCurrent[i].remove();
     }
   };
+
 
   // Event Handler - activates page
   var onPinMainMousedown = function (evt) {
@@ -132,7 +136,7 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  // Shows postings
+  // Shows any number of postings
   var showPostings = function (array) {
     // Creates pins, adds IDs (equal to pin element index and posting index), registers Event Handler, and appends them to fragment element
     array.forEach(function (item, index) {
@@ -211,6 +215,9 @@
     allCards: allCards,
     setInactiveMode: setInactiveMode,
     setActiveMode: setActiveMode,
-    removePostings: removePostings
+    removePostings: removePostings,
+    showPostings: showPostings
   };
+  // console.log(window.data);
+  // console.log(window.data.postings);
 })();
