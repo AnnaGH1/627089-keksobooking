@@ -4,6 +4,7 @@
 
   var getData = function () {
     setTimeout(function () {
+      var FILTER_SELECTION_LIMIT = 5;
       var postingsData = window.data.postings;
 
       // Reference to filters
@@ -103,7 +104,6 @@
       // Adds price range property
       postingsData.forEach(addPriceRange);
 
-      var FILTER_SELECTION_LIMIT = 5;
 
       var showFiltered = function () {
         // Remove elements currently rendered

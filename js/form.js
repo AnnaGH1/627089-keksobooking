@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var pageMain = document.querySelector('main');
-
   var PROPERTY_PRICE_MIN = {
     'palace': 10000,
     'house': 5000,
@@ -136,58 +134,12 @@
   window.sharedVariables.adFormReset.addEventListener('mouseup', resetPage);
   window.sharedVariables.adFormReset.addEventListener('keydown', onFormResetEnterPress);
 
-  // Action if upload is successful
-  var onFormLoad = function () {
-    // Reset page
-    resetPage();
-
-    // Show success popup
-    var successTemplate = document.querySelector('#success').content.querySelector('.success');
-    var successPopup = successTemplate.cloneNode(true);
-    pageMain.appendChild(successPopup);
-
-    var removeSuccessPopup = function () {
-      window.util.removeElement(successPopup);
-      document.removeEventListener('click', removeSuccessPopup);
-      document.removeEventListener('keydown', onSuccessPopupEscPress);
-    };
-
-    var onSuccessPopupEscPress = function (evt) {
-      window.util.isEscEvent(evt, removeSuccessPopup);
-    };
-
-    // Event Handlers to close success popup
-    document.addEventListener('click', removeSuccessPopup);
-    document.addEventListener('keydown', onSuccessPopupEscPress);
-  };
-
-  // Action if upload has failed
-  var onFormError = function (uploadError) {
-    // Show error popup
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-    var errorPopup = errorTemplate.cloneNode(true);
-    errorPopup.querySelector('.error__message').textContent = uploadError;
-    pageMain.appendChild(errorPopup);
-
-    var removeErrorPopup = function () {
-      window.util.removeElement(errorPopup);
-      document.removeEventListener('click', removeErrorPopup);
-      document.removeEventListener('keydown', onErrorPopupEscPress);
-    };
-
-    var onErrorPopupEscPress = function (evt) {
-      window.util.isEscEvent(evt, removeErrorPopup);
-    };
-
-    // Event Handlers to close error popup
-    var errorButton = errorPopup.querySelector('.error__button');
-    errorButton.addEventListener('click', removeErrorPopup);
-    document.addEventListener('click', removeErrorPopup);
-    document.addEventListener('keydown', onErrorPopupEscPress);
-  };
-
   window.sharedVariables.adForm.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(window.sharedVariables.adForm), onFormLoad, onFormError);
+    window.backend.upload(new FormData(window.sharedVariables.adForm), window.userMessages.onLoad, window.userMessages.onError);
     evt.preventDefault();
   });
+
+  window.form = {
+    resetPage: resetPage
+  };
 })();

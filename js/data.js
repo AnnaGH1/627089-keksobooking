@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var LOCATION = {
+    'minX': 0,
+    'maxX': document.body.clientWidth,
+    'minY': 130,
+    'maxY': 630
+  };
+
   var parsedData;
 
   // Updates postings data when loaded
@@ -16,17 +23,10 @@
 
   // Callback if failed
   var onDataError = function (loadError) {
-    throw new Error(loadError);
+    window.userMessages.onError(loadError);
   };
 
   window.backend.load(onDataLoad, onDataError);
-
-  var LOCATION = {
-    'minX': 0,
-    'maxX': document.body.clientWidth,
-    'minY': 130,
-    'maxY': 630
-  };
 
   window.data = {
     LOCATION: LOCATION,
