@@ -115,8 +115,9 @@
 
   // Reset page
   var resetPage = function () {
-    // Clear form fields
+    // Clear form fields and filters
     window.sharedVariables.adForm.reset();
+    window.sharedVariables.filters.reset();
 
     // Inactive mode - map, form, filters
     window.map.setInactiveMode();
