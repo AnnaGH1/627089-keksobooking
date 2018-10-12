@@ -25,19 +25,13 @@
       var addPriceRange = function (element) {
         var priceRange;
         if (element.offer.price < 10000) {
-          // console.log(element.offer.price);
           priceRange = 'low';
-          // console.log(priceRange);
         }
         if ((element.offer.price >= 10000) && (element.offer.price <= 50000)) {
-          // console.log(element.offer.price);
           priceRange = 'middle';
-          // console.log(priceRange);
         }
         if (element.offer.price > 50000) {
-          // console.log(element.offer.price);
           priceRange = 'high';
-          // console.log(priceRange);
         }
 
         element.offer.priceRange = priceRange;
