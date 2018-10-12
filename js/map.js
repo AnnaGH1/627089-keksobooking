@@ -56,8 +56,8 @@
 
   // Remove pins and cards currently rendered
   var removePostings = function () {
-    var allPinsCurrent = document.getElementsByClassName('map__pin--posting');
-    var allCardsCurrent = document.getElementsByClassName('popup');
+    var allPinsCurrent = map.getElementsByClassName('map__pin--posting');
+    var allCardsCurrent = map.getElementsByClassName('popup');
     var postingsNumCurrent = allPinsCurrent.length;
 
     for (var i = postingsNumCurrent - 1; i >= 0; i--) {
@@ -65,7 +65,6 @@
       allCardsCurrent[i].remove();
     }
   };
-
 
   // Event Handler - activates page
   var onPinMainMousedown = function (evt) {
@@ -151,7 +150,6 @@
 
     // Gets reference to pins
     allPins = map.getElementsByClassName('map__pin--posting');
-    window.map.allPins = allPins;
 
     // Creates cards, adds class 'hidden', and appends them to fragment element
     array.forEach(function (item) {
@@ -165,7 +163,6 @@
 
     // Gets reference to cards
     allCards = map.getElementsByClassName('popup');
-    window.map.allCards = allCards;
   };
 
   // Event Handler - opens a card corresponding to the pin
@@ -211,13 +208,9 @@
 
   window.map = {
     pageActive: pageActive,
-    allPins: allPins,
-    allCards: allCards,
     setInactiveMode: setInactiveMode,
     setActiveMode: setActiveMode,
     removePostings: removePostings,
     showPostings: showPostings
   };
-  // console.log(window.data);
-  // console.log(window.data.postings);
 })();
