@@ -58,6 +58,7 @@
       adPrice.min = PROPERTY_PRICE_MIN.flat;
       adPrice.placeholder = PROPERTY_PRICE_MIN.flat;
     } else {
+      adPrice.min = PROPERTY_PRICE_MIN.bungalo;
       adPrice.placeholder = PROPERTY_PRICE_MIN.bungalo;
     }
   };
@@ -71,22 +72,22 @@
   var checkOut = window.sharedVariables.adForm.elements.timeout;
 
   var matchCheckOut = function () {
-    if (checkIn.value === '12:00') {
-      checkOut.value = '12:00';
-    } else if (checkIn.value === '13:00') {
-      checkOut.value = '13:00';
+    if (checkIn.value === window.sharedVariables.CHECKIN_TIME.option1) {
+      checkOut.value = window.sharedVariables.CHECKOUT_TIME.option1;
+    } else if (checkIn.value === window.sharedVariables.CHECKIN_TIME.option2) {
+      checkOut.value = window.sharedVariables.CHECKOUT_TIME.option2;
     } else {
-      checkOut.value = '14:00';
+      checkOut.value = window.sharedVariables.CHECKOUT_TIME.option3;
     }
   };
 
   var matchCheckIn = function () {
-    if (checkOut.value === '12:00') {
-      checkIn.value = '12:00';
-    } else if (checkOut.value === '13:00') {
-      checkIn.value = '13:00';
+    if (checkOut.value === window.sharedVariables.CHECKOUT_TIME.option1) {
+      checkIn.value = window.sharedVariables.CHECKIN_TIME.option1;
+    } else if (checkOut.value === window.sharedVariables.CHECKOUT_TIME.option2) {
+      checkIn.value = window.sharedVariables.CHECKIN_TIME.option2;
     } else {
-      checkIn.value = '14:00';
+      checkIn.value = window.sharedVariables.CHECKIN_TIME.option3;
     }
   };
 
