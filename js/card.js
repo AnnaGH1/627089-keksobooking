@@ -88,25 +88,28 @@
       // Adds more img tags to template and corresponding photo paths
       var fillPhotoGallery = function () {
         var photoGallery = cardElement.querySelector('.popup__photos');
-        var photosAvailable = postingData.offer.features;
+        var photosAvailable = postingData.offer.photos;
 
-        // Hide section if no photos available
+        // Hide section if no photos available, render photos otherwise
         if (photosAvailable.length === 0) {
           window.util.hideElementDisplayNone(photoGallery);
-        }
-        var photoItem0 = photoGallery.querySelector('img');
-        photoItem0.src = postingData.offer.photos[0];
-        photoGallery.appendChild(photoItem0);
-        var numberPhotosAfterFirst = postingData.offer.photos.length - 1;
-        if (numberPhotosAfterFirst === 0) {
+          return false;
+        } else {
+          var photoItem0 = photoGallery.querySelector('img');
+
+          photoItem0.src = postingData.offer.photos[0];
+          photoGallery.appendChild(photoItem0);
+          var numberPhotosAfterFirst = postingData.offer.photos.length - 1;
+          if (numberPhotosAfterFirst === 0) {
+            return photoGallery;
+          }
+          for (var photoIndex = 1; photoIndex <= numberPhotosAfterFirst; photoIndex++) {
+            var photoItem = photoItem0.cloneNode(true);
+            photoItem.src = postingData.offer.photos[photoIndex];
+            photoGallery.appendChild(photoItem);
+          }
           return photoGallery;
         }
-        for (var photoIndex = 1; photoIndex <= numberPhotosAfterFirst; photoIndex++) {
-          var photoItem = photoItem0.cloneNode(true);
-          photoItem.src = postingData.offer.photos[photoIndex];
-          photoGallery.appendChild(photoItem);
-        }
-        return photoGallery;
       };
 
       cardElement.querySelector('.popup__title').textContent = postingData.offer.title;
