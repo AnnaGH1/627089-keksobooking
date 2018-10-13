@@ -77,6 +77,15 @@
     removeElement: function (element) {
       element.remove();
       return element;
+    },
+
+    // Limit array elements number
+    limitElementsNumber: function (array, limit) {
+      if (array.length > limit) {
+        var selection = array.slice(0, limit);
+        return selection;
+      }
+      return selection;
     }
   };
 })();

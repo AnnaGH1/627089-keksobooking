@@ -97,7 +97,7 @@
         window.sharedVariables.pinMain.style.left = 0 + 'px';
       } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.maxX - PIN_MAIN.width)) {
         window.sharedVariables.pinMain.style.left = (window.data.LOCATION.maxX - PIN_MAIN.width) + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop < window.data.LOCATION.minY) {
+      } else if (window.sharedVariables.pinMain.offsetTop < (window.data.LOCATION.minY - PIN_MAIN.height)) {
         window.sharedVariables.pinMain.style.top = window.data.LOCATION.minY + 'px';
       } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.maxY - PIN_MAIN.height)) {
         window.sharedVariables.pinMain.style.top = (window.data.LOCATION.maxY - PIN_MAIN.height) + 'px';
@@ -120,7 +120,7 @@
       setActiveMode();
 
       if (!window.map.pageActive) {
-        showPostings(window.data.postings);
+        showPostings(window.util.limitElementsNumber(window.data.postings, window.sharedVariables.POSTINGS_NUMBER_LIMIT));
       }
 
       // Change page state to active
