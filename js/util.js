@@ -21,13 +21,8 @@
     },
 
     // Checks if an array contains an element
-    checkArrayContainsElement: function (array, element) {
-      for (var i = 0; i < array.length; i++) {
-        if (array[i] === element) {
-          return true;
-        }
-      }
-      return false;
+    checkArrayContainsElement: function (array, elementToFind) {
+      return array.includes(elementToFind);
     },
 
     // Gets a random integer between two values, inclusive
