@@ -3,6 +3,11 @@
 (function () {
   var POSTINGS_NUMBER_LIMIT = 5;
 
+  var PRICE_THRESHOLD = {
+    'lowToMiddle': 10000,
+    'middleToHigh': 50000
+  };
+
   var CHECKIN_TIME = {
     'option1': '12:00',
     'option2': '13:00',
@@ -28,6 +33,7 @@
 
   window.sharedVariables = {
     POSTINGS_NUMBER_LIMIT: POSTINGS_NUMBER_LIMIT,
+    PRICE_THRESHOLD: PRICE_THRESHOLD,
     CHECKIN_TIME: CHECKIN_TIME,
     CHECKOUT_TIME: CHECKOUT_TIME,
     pageMain: pageMain,

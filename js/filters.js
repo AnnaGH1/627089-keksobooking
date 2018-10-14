@@ -4,7 +4,6 @@
 
   var getData = function () {
     setTimeout(function () {
-      var FILTER_SELECTION_LIMIT = 5;
       var postingsData = window.data.postings;
 
       // Reference to filters
@@ -24,13 +23,13 @@
       // Adds priceRange property to postings elements
       var addPriceRange = function (element) {
         var priceRange;
-        if (element.offer.price < 10000) {
+        if (element.offer.price < window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) {
           priceRange = 'low';
         }
-        if ((element.offer.price >= 10000) && (element.offer.price <= 50000)) {
+        if ((element.offer.price >= window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) && (element.offer.price <= window.sharedVariables.PRICE_THRESHOLD.middleToHigh)) {
           priceRange = 'middle';
         }
-        if (element.offer.price > 50000) {
+        if (element.offer.price > window.sharedVariables.PRICE_THRESHOLD.middleToHigh) {
           priceRange = 'high';
         }
 
@@ -118,7 +117,7 @@
           var elevator = window.util.checkArrayContainsElement(element.offer.features, 'elevator');
           var conditioner = window.util.checkArrayContainsElement(element.offer.features, 'conditioner');
 
-          if (((element.offer.type === typeChoice) || typeChoice === 'any') && ((element.offer.priceRange === priceChoice) || priceChoice === 'any') && ((element.offer.rooms === roomsChoice) || roomsChoice === 'any') && ((element.offer.guests === guestsChoice) || guestsChoice === 'any') && ((wifi && wifiFilter.checked) || !wifiFilter.checked) && ((dishwasher && dishwasherFilter.checked) || !dishwasherFilter.checked) && ((parking && parkingFilter.checked) || !parkingFilter.checked) && ((washer && washerFilter.checked) || !washerFilter.checked) && ((elevator && elevatorFilter.checked) || !elevatorFilter.checked) && ((conditioner && conditionerFilter.checked) || !conditionerFilter.checked)) {
+          if (((element.offer.type === typeChoice) || typeChoice === 'any') && ((element.offer.priceRange === priceChoice) || priceChoice === 'any') && ((element.offer.rooms.toString() === roomsChoice) || roomsChoice === 'any') && ((element.offer.guests.toString() === guestsChoice) || guestsChoice === 'any') && ((wifi && wifiFilter.checked) || !wifiFilter.checked) && ((dishwasher && dishwasherFilter.checked) || !dishwasherFilter.checked) && ((parking && parkingFilter.checked) || !parkingFilter.checked) && ((washer && washerFilter.checked) || !washerFilter.checked) && ((elevator && elevatorFilter.checked) || !elevatorFilter.checked) && ((conditioner && conditionerFilter.checked) || !conditionerFilter.checked)) {
             return true;
           }
           return false;
@@ -140,7 +139,7 @@
 
         // Keep first 5 postings max
         var keepTopMatch = function (element, index) {
-          if (index <= (FILTER_SELECTION_LIMIT - 1)) {
+          if (index <= (window.sharedVariables.POSTINGS_NUMBER_LIMIT - 1)) {
             return true;
           }
           return false;
