@@ -56,14 +56,15 @@
 
   // Remove pins and cards currently rendered
   var removePostings = function () {
-    var allPinsCurrent = map.getElementsByClassName('map__pin--posting');
-    var allCardsCurrent = map.getElementsByClassName('popup');
-    var postingsNumCurrent = allPinsCurrent.length;
+    var allPinsCurrent = map.querySelectorAll('.map__pin--posting');
+    var allCardsCurrent = map.querySelectorAll('.popup');
 
-    for (var i = postingsNumCurrent - 1; i >= 0; i--) {
-      allPinsCurrent[i].remove();
-      allCardsCurrent[i].remove();
-    }
+    allPinsCurrent.forEach(function (element) {
+      element.remove();
+    });
+    allCardsCurrent.forEach(function (element) {
+      element.remove();
+    });
   };
 
   // Event Handler - activates page
@@ -97,7 +98,7 @@
         window.sharedVariables.pinMain.style.left = 0 + 'px';
       } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.maxX - PIN_MAIN.width)) {
         window.sharedVariables.pinMain.style.left = (window.data.LOCATION.maxX - PIN_MAIN.width) + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop < window.data.LOCATION.minY) {
+      } else if (window.sharedVariables.pinMain.offsetTop < (window.data.LOCATION.minY - PIN_MAIN.height)) {
         window.sharedVariables.pinMain.style.top = window.data.LOCATION.minY + 'px';
       } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.maxY - PIN_MAIN.height)) {
         window.sharedVariables.pinMain.style.top = (window.data.LOCATION.maxY - PIN_MAIN.height) + 'px';
@@ -120,7 +121,7 @@
       setActiveMode();
 
       if (!window.map.pageActive) {
-        showPostings(window.data.postings);
+        showPostings(window.util.limitElementsNumber(window.data.postings, window.sharedVariables.POSTINGS_NUMBER_LIMIT));
       }
 
       // Change page state to active
@@ -149,7 +150,7 @@
     mapPins.appendChild(fragment);
 
     // Gets reference to pins
-    allPins = map.getElementsByClassName('map__pin--posting');
+    allPins = map.querySelectorAll('.map__pin--posting');
 
     // Creates cards, adds class 'hidden', and appends them to fragment element
     array.forEach(function (item) {
@@ -162,7 +163,7 @@
     map.insertBefore(fragment, window.sharedVariables.filtersContainer);
 
     // Gets reference to cards
-    allCards = map.getElementsByClassName('popup');
+    allCards = map.querySelectorAll('.popup');
   };
 
   // Event Handler - opens a card corresponding to the pin

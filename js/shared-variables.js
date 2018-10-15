@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var POSTINGS_NUMBER_LIMIT = 5;
+
+  var PRICE_THRESHOLD = {
+    'lowToMiddle': 10000,
+    'middleToHigh': 50000
+  };
+
   var pageMain = document.querySelector('main');
   var filtersContainer = document.querySelector('.map__filters-container');
   var filters = document.querySelector('.map__filters');
@@ -12,6 +19,8 @@
   var pinMain = document.querySelector('.map__pin--main');
 
   window.sharedVariables = {
+    POSTINGS_NUMBER_LIMIT: POSTINGS_NUMBER_LIMIT,
+    PRICE_THRESHOLD: PRICE_THRESHOLD,
     pageMain: pageMain,
     filtersContainer: filtersContainer,
     filters: filters,

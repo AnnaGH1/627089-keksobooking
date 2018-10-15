@@ -58,58 +58,49 @@
       adPrice.min = PROPERTY_PRICE_MIN.flat;
       adPrice.placeholder = PROPERTY_PRICE_MIN.flat;
     } else {
+      adPrice.min = PROPERTY_PRICE_MIN.bungalo;
       adPrice.placeholder = PROPERTY_PRICE_MIN.bungalo;
     }
   };
 
   propertyType.addEventListener('change', setMinPriceForEachType);
 
-  // Form validation - check-in/check-out times
-  var roomsSelect = window.sharedVariables.adForm.elements.rooms;
-  var guestsSelect = window.sharedVariables.adForm.elements.capacity;
+  // Form validation
+  var roomsCapacity = window.sharedVariables.adForm.elements.rooms;
+  var guestsCapacity = window.sharedVariables.adForm.elements.capacity;
   var checkIn = window.sharedVariables.adForm.elements.timein;
   var checkOut = window.sharedVariables.adForm.elements.timeout;
 
-  var matchCheckOut = function () {
-    if (checkIn.value === '12:00') {
-      checkOut.value = '12:00';
-    } else if (checkIn.value === '13:00') {
-      checkOut.value = '13:00';
+  // Event Handler on Checkin and Checkout Time change
+  var onTimeChange = function (evt) {
+    if (evt.currentTarget === checkIn) {
+      checkOut.value = checkIn.value;
     } else {
-      checkOut.value = '14:00';
+      checkIn.value = checkOut.value;
     }
   };
 
-  var matchCheckIn = function () {
-    if (checkOut.value === '12:00') {
-      checkIn.value = '12:00';
-    } else if (checkOut.value === '13:00') {
-      checkIn.value = '13:00';
+  checkIn.addEventListener('change', onTimeChange);
+  checkOut.addEventListener('change', onTimeChange);
+
+
+  // Event Handler on rooms and guests capacity change
+  var onCapacityChange = function () {
+    if (roomsCapacity.value === ROOMS_NUMBER.oneRoom && guestsCapacity.value !== GUESTS_NUMBER.oneGuest) {
+      guestsCapacity.setCustomValidity('Не больше 1 гостя');
+    } else if ((roomsCapacity.value === ROOMS_NUMBER.twoRooms && guestsCapacity.value === GUESTS_NUMBER.threeGuests) || (roomsCapacity.value === ROOMS_NUMBER.twoRooms && guestsCapacity.value === GUESTS_NUMBER.noGuests)) {
+      guestsCapacity.setCustomValidity('Не больше 2 гостей');
+    } else if (roomsCapacity.value === ROOMS_NUMBER.threeRooms && guestsCapacity.value === GUESTS_NUMBER.noGuests) {
+      guestsCapacity.setCustomValidity('Не больше 3 гостей');
+    } else if (roomsCapacity.value === ROOMS_NUMBER.hundredRooms && guestsCapacity.value !== GUESTS_NUMBER.noGuests) {
+      guestsCapacity.setCustomValidity('Не для гостей');
     } else {
-      checkIn.value = '14:00';
+      guestsCapacity.setCustomValidity('');
     }
   };
 
-  checkIn.addEventListener('change', matchCheckOut);
-  checkOut.addEventListener('change', matchCheckIn);
-
-  // Form validation - rooms capacity
-  var checkRoomsCapacity = function () {
-    if (roomsSelect.value === ROOMS_NUMBER.oneRoom && guestsSelect.value !== GUESTS_NUMBER.oneGuest) {
-      guestsSelect.setCustomValidity('Не больше 1 гостя');
-    } else if ((roomsSelect.value === ROOMS_NUMBER.twoRooms && guestsSelect.value === GUESTS_NUMBER.threeGuests) || (roomsSelect.value === ROOMS_NUMBER.twoRooms && guestsSelect.value === GUESTS_NUMBER.noGuests)) {
-      guestsSelect.setCustomValidity('Не больше 2 гостей');
-    } else if (roomsSelect.value === ROOMS_NUMBER.threeRooms && guestsSelect.value === GUESTS_NUMBER.noGuests) {
-      guestsSelect.setCustomValidity('Не больше 3 гостей');
-    } else if (roomsSelect.value === ROOMS_NUMBER.hundredRooms && guestsSelect.value !== GUESTS_NUMBER.noGuests) {
-      guestsSelect.setCustomValidity('Не для гостей');
-    } else {
-      guestsSelect.setCustomValidity('');
-    }
-  };
-
-  roomsSelect.addEventListener('change', checkRoomsCapacity);
-  guestsSelect.addEventListener('change', checkRoomsCapacity);
+  roomsCapacity.addEventListener('change', onCapacityChange);
+  guestsCapacity.addEventListener('change', onCapacityChange);
 
   // Reset page
   var resetPage = function () {
@@ -131,7 +122,9 @@
   };
 
   // Event Listeners registered on form reset button
-  window.sharedVariables.adFormReset.addEventListener('mouseup', resetPage);
+  window.sharedVariables.adFormReset.addEventListener('mouseup', function () {
+    resetPage();
+  });
   window.sharedVariables.adFormReset.addEventListener('keydown', onFormResetEnterPress);
 
   window.sharedVariables.adForm.addEventListener('submit', function (evt) {

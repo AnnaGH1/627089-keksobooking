@@ -21,13 +21,8 @@
     },
 
     // Checks if an array contains an element
-    checkArrayContainsElement: function (array, element) {
-      for (var i = 0; i < array.length; i++) {
-        if (array[i] === element) {
-          return true;
-        }
-      }
-      return false;
+    checkArrayContainsElement: function (array, elementToFind) {
+      return array.includes(elementToFind);
     },
 
     // Gets a random integer between two values, inclusive
@@ -77,6 +72,15 @@
     removeElement: function (element) {
       element.remove();
       return element;
+    },
+
+    // Limit array elements number
+    limitElementsNumber: function (array, limit) {
+      if (array.length > limit) {
+        var selection = array.slice(0, limit);
+        return selection;
+      }
+      return selection;
     }
   };
 })();

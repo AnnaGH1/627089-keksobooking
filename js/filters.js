@@ -4,7 +4,6 @@
 
   var getData = function () {
     setTimeout(function () {
-      var FILTER_SELECTION_LIMIT = 5;
       var postingsData = window.data.postings;
 
       // Reference to filters
@@ -24,81 +23,18 @@
       // Adds priceRange property to postings elements
       var addPriceRange = function (element) {
         var priceRange;
-        if (element.offer.price < 10000) {
-          // console.log(element.offer.price);
+        if (element.offer.price < window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) {
           priceRange = 'low';
-          // console.log(priceRange);
         }
-        if ((element.offer.price >= 10000) && (element.offer.price <= 50000)) {
-          // console.log(element.offer.price);
+        if ((element.offer.price >= window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) && (element.offer.price <= window.sharedVariables.PRICE_THRESHOLD.middleToHigh)) {
           priceRange = 'middle';
-          // console.log(priceRange);
         }
-        if (element.offer.price > 50000) {
-          // console.log(element.offer.price);
+        if (element.offer.price > window.sharedVariables.PRICE_THRESHOLD.middleToHigh) {
           priceRange = 'high';
-          // console.log(priceRange);
         }
 
         element.offer.priceRange = priceRange;
         return element;
-      };
-
-      // Adds rank to postings elements depending on filters applied
-      var addRank = function (element) {
-        var rank = 0;
-        var wifi = window.util.checkArrayContainsElement(element.offer.features, 'wifi');
-        var dishwasher = window.util.checkArrayContainsElement(element.offer.features, 'dishwasher');
-        var parking = window.util.checkArrayContainsElement(element.offer.features, 'parking');
-        var washer = window.util.checkArrayContainsElement(element.offer.features, 'washer');
-        var elevator = window.util.checkArrayContainsElement(element.offer.features, 'elevator');
-        var conditioner = window.util.checkArrayContainsElement(element.offer.features, 'conditioner');
-
-
-        if (element.offer.type === typeFilter.value) {
-          rank += 3;
-        }
-        if (element.offer.priceRange === priceFilter.value) {
-          rank += 3;
-        }
-        if (element.offer.rooms.toString() === roomsFilter.value) {
-          rank += 3;
-        }
-        if (element.offer.guests.toString() === guestsFilter.value) {
-          rank += 3;
-        }
-        if (wifiFilter.checked && wifi) {
-          rank += 1;
-        }
-        if (dishwasherFilter.checked && dishwasher) {
-          rank += 1;
-        }
-        if (parkingFilter.checked && parking) {
-          rank += 1;
-        }
-        if (washerFilter.checked && washer) {
-          rank += 1;
-        }
-        if (elevatorFilter.checked && elevator) {
-          rank += 1;
-        }
-        if (conditionerFilter.checked && conditioner) {
-          rank += 1;
-        }
-
-        element.rank = rank;
-        return element;
-      };
-
-
-      var priceComparison = function (left, right) {
-        if (left > right) {
-          return 1;
-        } else if (left < right) {
-          return -1;
-        } else {
-          return 0;
-        }
       };
 
       // Adds price range property
@@ -117,42 +53,35 @@
 
         // Keep postings that match all filters applied
         var keepMatchingPostings = function (element) {
-          var wifi = window.util.checkArrayContainsElement(element.offer.features, 'wifi');
-          var dishwasher = window.util.checkArrayContainsElement(element.offer.features, 'dishwasher');
-          var parking = window.util.checkArrayContainsElement(element.offer.features, 'parking');
-          var washer = window.util.checkArrayContainsElement(element.offer.features, 'washer');
-          var elevator = window.util.checkArrayContainsElement(element.offer.features, 'elevator');
-          var conditioner = window.util.checkArrayContainsElement(element.offer.features, 'conditioner');
+          var wifiAvailable = window.util.checkArrayContainsElement(element.offer.features, 'wifi');
+          var dishwasherAvailable = window.util.checkArrayContainsElement(element.offer.features, 'dishwasher');
+          var parkingAvailable = window.util.checkArrayContainsElement(element.offer.features, 'parking');
+          var washerAvailable = window.util.checkArrayContainsElement(element.offer.features, 'washer');
+          var elevatorAvailable = window.util.checkArrayContainsElement(element.offer.features, 'elevator');
+          var conditionerAvailable = window.util.checkArrayContainsElement(element.offer.features, 'conditioner');
 
-          if (((element.offer.type === typeChoice) || typeChoice === 'any') && ((element.offer.priceRange === priceChoice) || priceChoice === 'any') && ((element.offer.rooms === roomsChoice) || roomsChoice === 'any') && ((element.offer.guests === guestsChoice) || guestsChoice === 'any') && ((wifi && wifiFilter.checked) || !wifiFilter.checked) && ((dishwasher && dishwasherFilter.checked) || !dishwasherFilter.checked) && ((parking && parkingFilter.checked) || !parkingFilter.checked) && ((washer && washerFilter.checked) || !washerFilter.checked) && ((elevator && elevatorFilter.checked) || !elevatorFilter.checked) && ((conditioner && conditionerFilter.checked) || !conditionerFilter.checked)) {
-            return true;
-          }
-          return false;
+          return (((element.offer.type === typeChoice) || typeChoice === 'any') && ((element.offer.priceRange === priceChoice) || priceChoice === 'any') && ((element.offer.rooms.toString() === roomsChoice) || roomsChoice === 'any') && ((element.offer.guests.toString() === guestsChoice) || guestsChoice === 'any') && ((wifiAvailable && wifiFilter.checked) || !wifiFilter.checked) && ((dishwasherAvailable && dishwasherFilter.checked) || !dishwasherFilter.checked) && ((parkingAvailable && parkingFilter.checked) || !parkingFilter.checked) && ((washerAvailable && washerFilter.checked) || !washerFilter.checked) && ((elevatorAvailable && elevatorFilter.checked) || !elevatorFilter.checked) && ((conditionerAvailable && conditionerFilter.checked) || !conditionerFilter.checked));
         };
 
         var postingsMatch = postingsData.filter(keepMatchingPostings);
 
-        // Add rank property
-        postingsMatch.forEach(addRank);
-
-        // Sort according to rank property and if equal - lower price first
+        // Sort by price - lower price first
         postingsMatch.sort(function (left, right) {
-          var rankDiff = right.rank - left.rank;
-          if (rankDiff === 0) {
-            rankDiff = priceComparison(left.offer.price, right.offer.price);
+          if (left.offer.price < right.offer.price) {
+            return -1;
           }
-          return rankDiff;
+          if (left.offer.price > right.offer.price) {
+            return 1;
+          } else {
+            return 0;
+          }
         });
 
         // Keep first 5 postings max
         var keepTopMatch = function (element, index) {
-          if (index <= (FILTER_SELECTION_LIMIT - 1)) {
-            return true;
-          }
-          return false;
+          return (index <= (window.sharedVariables.POSTINGS_NUMBER_LIMIT - 1));
         };
 
-        // var postingsTopMatch = postingsData.filter(keepMatchingPostings).filter(keepTopMatch);
         var postingsTopMatch = postingsMatch.filter(keepTopMatch);
 
         // Render elements

@@ -41,34 +41,34 @@
         var conditioner = featuresList.querySelector('.popup__feature--conditioner');
 
         var featuresAvailable = postingData.offer.features;
-        var checkWiFi = window.util.checkArrayContainsElement(featuresAvailable, 'wifi');
-        var checkDishwasher = window.util.checkArrayContainsElement(featuresAvailable, 'dishwasher');
-        var checkParking = window.util.checkArrayContainsElement(featuresAvailable, 'parking');
-        var checkWasher = window.util.checkArrayContainsElement(featuresAvailable, 'washer');
-        var checkElevator = window.util.checkArrayContainsElement(featuresAvailable, 'elevator');
-        var checkConditioner = window.util.checkArrayContainsElement(featuresAvailable, 'conditioner');
+        var wifiAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'wifi');
+        var dishwasherAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'dishwasher');
+        var parkingAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'parking');
+        var washerAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'washer');
+        var elevatorAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'elevator');
+        var conditionerAvailable = window.util.checkArrayContainsElement(featuresAvailable, 'conditioner');
 
         // Hide section if no features available
         if (featuresAvailable.length === 0) {
           window.util.hideElementDisplayNone(featuresList);
           return false;
         } else {
-          if (!checkWiFi) {
+          if (!wifiAvailable) {
             window.util.hideElementDisplayNone(wifi);
           }
-          if (!checkDishwasher) {
+          if (!dishwasherAvailable) {
             window.util.hideElementDisplayNone(dishwasher);
           }
-          if (!checkParking) {
+          if (!parkingAvailable) {
             window.util.hideElementDisplayNone(parking);
           }
-          if (!checkWasher) {
+          if (!washerAvailable) {
             window.util.hideElementDisplayNone(washer);
           }
-          if (!checkElevator) {
+          if (!elevatorAvailable) {
             window.util.hideElementDisplayNone(elevator);
           }
-          if (!checkConditioner) {
+          if (!conditionerAvailable) {
             window.util.hideElementDisplayNone(conditioner);
           }
         }
@@ -88,25 +88,28 @@
       // Adds more img tags to template and corresponding photo paths
       var fillPhotoGallery = function () {
         var photoGallery = cardElement.querySelector('.popup__photos');
-        var photosAvailable = postingData.offer.features;
+        var photosAvailable = postingData.offer.photos;
 
-        // Hide section if no photos available
+        // Hide section if no photos available, render photos otherwise
         if (photosAvailable.length === 0) {
           window.util.hideElementDisplayNone(photoGallery);
-        }
-        var photoItem0 = photoGallery.querySelector('img');
-        photoItem0.src = postingData.offer.photos[0];
-        photoGallery.appendChild(photoItem0);
-        var numberPhotosAfterFirst = postingData.offer.photos.length - 1;
-        if (numberPhotosAfterFirst === 0) {
+          return false;
+        } else {
+          var photoItem0 = photoGallery.querySelector('img');
+
+          photoItem0.src = postingData.offer.photos[0];
+          photoGallery.appendChild(photoItem0);
+          var numberPhotosAfterFirst = postingData.offer.photos.length - 1;
+          if (numberPhotosAfterFirst === 0) {
+            return photoGallery;
+          }
+          for (var photoIndex = 1; photoIndex <= numberPhotosAfterFirst; photoIndex++) {
+            var photoItem = photoItem0.cloneNode(true);
+            photoItem.src = postingData.offer.photos[photoIndex];
+            photoGallery.appendChild(photoItem);
+          }
           return photoGallery;
         }
-        for (var photoIndex = 1; photoIndex <= numberPhotosAfterFirst; photoIndex++) {
-          var photoItem = photoItem0.cloneNode(true);
-          photoItem.src = postingData.offer.photos[photoIndex];
-          photoGallery.appendChild(photoItem);
-        }
-        return photoGallery;
       };
 
       cardElement.querySelector('.popup__title').textContent = postingData.offer.title;

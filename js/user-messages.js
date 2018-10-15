@@ -13,18 +13,18 @@
       var successPopup = successTemplate.cloneNode(true);
       window.sharedVariables.pageMain.appendChild(successPopup);
 
-      var removeSuccessPopup = function () {
+      var onSuccessPopupClick = function () {
         window.util.removeElement(successPopup);
-        document.removeEventListener('click', removeSuccessPopup);
+        document.removeEventListener('click', onSuccessPopupClick);
         document.removeEventListener('keydown', onSuccessPopupEscPress);
       };
 
       var onSuccessPopupEscPress = function (evt) {
-        window.util.isEscEvent(evt, removeSuccessPopup);
+        window.util.isEscEvent(evt, onSuccessPopupClick);
       };
 
       // Event Handlers to close success popup
-      document.addEventListener('click', removeSuccessPopup);
+      document.addEventListener('click', onSuccessPopupClick);
       document.addEventListener('keydown', onSuccessPopupEscPress);
     },
 
@@ -35,20 +35,20 @@
       errorPopup.querySelector('.error__message').textContent = uploadError;
       window.sharedVariables.pageMain.appendChild(errorPopup);
 
-      var removeErrorPopup = function () {
+      var onErrorPopupClick = function () {
         window.util.removeElement(errorPopup);
-        document.removeEventListener('click', removeErrorPopup);
+        document.removeEventListener('click', onErrorPopupClick);
         document.removeEventListener('keydown', onErrorPopupEscPress);
       };
 
       var onErrorPopupEscPress = function (evt) {
-        window.util.isEscEvent(evt, removeErrorPopup);
+        window.util.isEscEvent(evt, onErrorPopupClick);
       };
 
       // Event Handlers to close error popup
       var errorButton = errorPopup.querySelector('.error__button');
-      errorButton.addEventListener('click', removeErrorPopup);
-      document.addEventListener('click', removeErrorPopup);
+      errorButton.addEventListener('click', onErrorPopupClick);
+      document.addEventListener('click', onErrorPopupClick);
       document.addEventListener('keydown', onErrorPopupEscPress);
     }
   };
