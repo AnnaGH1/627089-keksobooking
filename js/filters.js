@@ -37,9 +37,12 @@
         return element;
       };
 
-      // Adds price range property
-      postingsData.forEach(addPriceRange);
-
+      try {
+        // Adds price range property
+        postingsData.forEach(addPriceRange);
+      } catch (error) {
+        // User message provided from data.js module
+      }
 
       var showFiltered = function () {
         // Remove elements currently rendered
