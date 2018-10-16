@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
+  var pageMain = document.querySelector('main');
 
   window.userMessages = {
+
     // Show success popup
     onLoad: function () {
       // Reset page
@@ -11,7 +13,7 @@
       // Show success popup
       var successTemplate = document.querySelector('#success').content.querySelector('.success');
       var successPopup = successTemplate.cloneNode(true);
-      window.sharedVariables.pageMain.appendChild(successPopup);
+      pageMain.appendChild(successPopup);
 
       var onSuccessPopupClick = function () {
         window.util.removeElement(successPopup);
@@ -33,7 +35,7 @@
       var errorTemplate = document.querySelector('#error').content.querySelector('.error');
       var errorPopup = errorTemplate.cloneNode(true);
       errorPopup.querySelector('.error__message').textContent = uploadError;
-      window.sharedVariables.pageMain.appendChild(errorPopup);
+      pageMain.appendChild(errorPopup);
 
       var onErrorPopupClick = function () {
         window.util.removeElement(errorPopup);
