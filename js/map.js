@@ -29,6 +29,33 @@
   var fileChooserPhotos = window.sharedVariables.adForm.querySelector('.ad-form__upload input[type=file]');
   var previewPhotos = window.sharedVariables.adForm.querySelector('.ad-form__photo');
 
+  // Event handler on avatar change
+  var onAvatarChange = function () {
+    var file = fileChooserAvatar.files[0];
+    var reader = new FileReader();
+    reader.addEventListener('load', function () {
+      previewAvatar.src = reader.result;
+    });
+    reader.readAsDataURL(file);
+  };
+
+  // Event handler on property photos change
+  var onPhotosChange = function () {
+    var files = fileChooserPhotos.files;
+    [].forEach.call(files, function (el) {
+      var imgEl = document.createElement('img');
+      imgEl.width = PHOTO.width;
+      imgEl.height = PHOTO.height;
+      imgEl.alt = 'Property photo';
+      previewPhotos.appendChild(imgEl);
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        imgEl.src = reader.result;
+      });
+      reader.readAsDataURL(el);
+    });
+  };
+
   // Inactive mode - map, form, filters
   var setInactiveMode = function () {
     // Inactive mode - map
@@ -43,6 +70,10 @@
     photos.forEach(function (el) {
       window.util.removeElement(el);
     });
+
+    // Remove avatar and property photos event listerners
+    fileChooserAvatar.removeEventListener('change', onAvatarChange);
+    fileChooserPhotos.removeEventListener('change', onPhotosChange);
 
     // Inactive mode - filters
     window.sharedVariables.filtersSelect.forEach(window.util.setDisabled);
@@ -68,31 +99,9 @@
     window.sharedVariables.adForm.classList.remove('ad-form--disabled');
     window.sharedVariables.adFormFieldsets.forEach(window.util.removeDisabled);
 
-    // Event Listeners on avatar and photos inputs
-    fileChooserAvatar.addEventListener('change', function () {
-      var file = fileChooserAvatar.files[0];
-      var reader = new FileReader();
-      reader.addEventListener('load', function () {
-        previewAvatar.src = reader.result;
-      });
-      reader.readAsDataURL(file);
-    });
-
-    fileChooserPhotos.addEventListener('change', function () {
-      var files = fileChooserPhotos.files;
-      [].forEach.call(files, function (el) {
-        var imgEl = document.createElement('img');
-        imgEl.width = PHOTO.width;
-        imgEl.height = PHOTO.height;
-        imgEl.alt = 'Property photo';
-        previewPhotos.appendChild(imgEl);
-        var reader = new FileReader();
-        reader.addEventListener('load', function () {
-          imgEl.src = reader.result;
-        });
-        reader.readAsDataURL(el);
-      });
-    });
+    // Add avatar and property photos event listerners
+    fileChooserAvatar.addEventListener('change', onAvatarChange);
+    fileChooserPhotos.addEventListener('change', onPhotosChange);
 
     // Active mode - filters
     window.sharedVariables.filtersSelect.forEach(window.util.removeDisabled);
