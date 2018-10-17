@@ -2,20 +2,59 @@
 
 (function () {
   var PIN_MAIN = {
-    'width': window.sharedVariables.pinMain.offsetWidth,
-    'height': window.sharedVariables.pinMain.offsetHeight,
-    'widthHalf': window.sharedVariables.pinMain.offsetWidth / 2,
-    'heightHalf': window.sharedVariables.pinMain.offsetHeight / 2
+    'width': 64,
+    'height': 64,
+    'widthHalf': 64 / 2,
+    'heightHalf': 64 / 2
   };
 
-  // Reference to elements used in page activation
+  var AVATAR_DEFAULT = 'img/muffin-grey.svg';
+
+  var PHOTO = {
+    'width': 70,
+    'height': 70
+  };
+
   var map = document.querySelector('.map');
+  var pinMain = document.querySelector('.map__pin--main');
   var fragment = document.createDocumentFragment();
   var mapPins = document.querySelector('.map__pins');
   var address = window.sharedVariables.adForm.querySelector('#address');
   var allPins;
   var allCards;
   var pageActive = false;
+  var filtersContainer = document.querySelector('.map__filters-container');
+  var fileChooserAvatar = window.sharedVariables.adForm.querySelector('.ad-form__field input[type=file]');
+  var previewAvatar = window.sharedVariables.adForm.querySelector('.ad-form-header__preview').querySelector('img');
+  var fileChooserPhotos = window.sharedVariables.adForm.querySelector('.ad-form__upload input[type=file]');
+  var previewPhotos = window.sharedVariables.adForm.querySelector('.ad-form__photo');
+
+  // Event handler on avatar change
+  var onAvatarChange = function () {
+    var file = fileChooserAvatar.files[0];
+    var reader = new FileReader();
+    reader.addEventListener('load', function () {
+      previewAvatar.src = reader.result;
+    });
+    reader.readAsDataURL(file);
+  };
+
+  // Event handler on property photos change
+  var onPhotosChange = function () {
+    var files = fileChooserPhotos.files;
+    [].forEach.call(files, function (el) {
+      var imgEl = document.createElement('img');
+      imgEl.width = PHOTO.width;
+      imgEl.height = PHOTO.height;
+      imgEl.alt = 'Property photo';
+      previewPhotos.appendChild(imgEl);
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        imgEl.src = reader.result;
+      });
+      reader.readAsDataURL(el);
+    });
+  };
 
   // Inactive mode - map, form, filters
   var setInactiveMode = function () {
@@ -25,6 +64,16 @@
     // Inactive mode - form
     window.sharedVariables.adForm.classList.add('ad-form--disabled');
     window.sharedVariables.adFormFieldsets.forEach(window.util.setDisabled);
+    // Reset avatar and property photos
+    previewAvatar.src = AVATAR_DEFAULT;
+    var photos = previewPhotos.querySelectorAll('img');
+    photos.forEach(function (el) {
+      window.util.removeElement(el);
+    });
+
+    // Remove avatar and property photos event listerners
+    fileChooserAvatar.removeEventListener('change', onAvatarChange);
+    fileChooserPhotos.removeEventListener('change', onPhotosChange);
 
     // Inactive mode - filters
     window.sharedVariables.filtersSelect.forEach(window.util.setDisabled);
@@ -33,8 +82,8 @@
     // Inactive mode - Main pin - default location
     var resetLeft = '570px';
     var resetTop = '375px';
-    window.sharedVariables.pinMain.style.left = resetLeft;
-    window.sharedVariables.pinMain.style.top = resetTop;
+    pinMain.style.left = resetLeft;
+    pinMain.style.top = resetTop;
 
     // Inactive mode - Address field - coordinates adjusted for main pin shape
     address.value = Math.round(window.util.stylePxToNumber(resetLeft) + PIN_MAIN.widthHalf) + ', ' + Math.round(window.util.stylePxToNumber(resetTop) + PIN_MAIN.heightHalf);
@@ -49,6 +98,11 @@
     // Active mode - form
     window.sharedVariables.adForm.classList.remove('ad-form--disabled');
     window.sharedVariables.adFormFieldsets.forEach(window.util.removeDisabled);
+
+    // Add avatar and property photos event listerners
+    fileChooserAvatar.addEventListener('change', onAvatarChange);
+    fileChooserPhotos.addEventListener('change', onPhotosChange);
+
     // Active mode - filters
     window.sharedVariables.filtersSelect.forEach(window.util.removeDisabled);
     window.util.removeDisabled(window.sharedVariables.filtersFieldset);
@@ -90,25 +144,25 @@
         y: moveEvt.clientY
       };
 
-      var offsetLeftCurrent = window.sharedVariables.pinMain.offsetLeft - shift.x;
-      var offsetTopCurrent = window.sharedVariables.pinMain.offsetTop - shift.y;
+      var offsetLeftCurrent = pinMain.offsetLeft - shift.x;
+      var offsetTopCurrent = pinMain.offsetTop - shift.y;
 
       // Limits the area of pin location
-      if (window.sharedVariables.pinMain.offsetLeft < window.data.LOCATION.minX) {
-        window.sharedVariables.pinMain.style.left = 0 + 'px';
-      } else if (window.sharedVariables.pinMain.offsetLeft > (window.data.LOCATION.maxX - PIN_MAIN.width)) {
-        window.sharedVariables.pinMain.style.left = (window.data.LOCATION.maxX - PIN_MAIN.width) + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop < (window.data.LOCATION.minY - PIN_MAIN.height)) {
-        window.sharedVariables.pinMain.style.top = window.data.LOCATION.minY + 'px';
-      } else if (window.sharedVariables.pinMain.offsetTop > (window.data.LOCATION.maxY - PIN_MAIN.height)) {
-        window.sharedVariables.pinMain.style.top = (window.data.LOCATION.maxY - PIN_MAIN.height) + 'px';
+      if (pinMain.offsetLeft < window.data.LOCATION.minX) {
+        pinMain.style.left = 0 + 'px';
+      } else if (pinMain.offsetLeft > (window.data.LOCATION.maxX - PIN_MAIN.width)) {
+        pinMain.style.left = (window.data.LOCATION.maxX - PIN_MAIN.width) + 'px';
+      } else if (pinMain.offsetTop < (window.data.LOCATION.minY - PIN_MAIN.height)) {
+        pinMain.style.top = window.data.LOCATION.minY + 'px';
+      } else if (pinMain.offsetTop > (window.data.LOCATION.maxY - PIN_MAIN.height)) {
+        pinMain.style.top = (window.data.LOCATION.maxY - PIN_MAIN.height) + 'px';
       } else {
-        window.sharedVariables.pinMain.style.left = offsetLeftCurrent + 'px';
-        window.sharedVariables.pinMain.style.top = offsetTopCurrent + 'px';
+        pinMain.style.left = offsetLeftCurrent + 'px';
+        pinMain.style.top = offsetTopCurrent + 'px';
       }
 
       // Address field - Coordinates adjusted for pin shape are updated during mousemove
-      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.height));
+      address.value = Math.round((window.util.stylePxToNumber(pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(pinMain.style.top) + PIN_MAIN.height));
     };
 
     // Activates form and filters, shows similar postings once
@@ -116,7 +170,7 @@
       upEvt.preventDefault();
 
       // Address field - Coordinates adjusted for pin shape are updated on mouseup
-      address.value = Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(window.sharedVariables.pinMain.style.top) + PIN_MAIN.height));
+      address.value = Math.round((window.util.stylePxToNumber(pinMain.style.left) + PIN_MAIN.widthHalf)) + ', ' + Math.round((window.util.stylePxToNumber(pinMain.style.top) + PIN_MAIN.height));
 
       setActiveMode();
 
@@ -160,7 +214,7 @@
     });
 
     // Renders cards
-    map.insertBefore(fragment, window.sharedVariables.filtersContainer);
+    map.insertBefore(fragment, filtersContainer);
 
     // Gets reference to cards
     allCards = map.querySelectorAll('.popup');
@@ -205,13 +259,12 @@
   };
 
   // Event Handler registered on main pin
-  window.sharedVariables.pinMain.addEventListener('mousedown', onPinMainMousedown);
+  pinMain.addEventListener('mousedown', onPinMainMousedown);
 
   window.map = {
     pageActive: pageActive,
     setInactiveMode: setInactiveMode,
-    setActiveMode: setActiveMode,
     removePostings: removePostings,
-    showPostings: showPostings
+    showPostings: showPostings,
   };
 })();

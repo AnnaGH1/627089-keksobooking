@@ -4,6 +4,11 @@
 
   var getData = function () {
     setTimeout(function () {
+      var PRICE_THRESHOLD = {
+        'lowToMiddle': 10000,
+        'middleToHigh': 50000
+      };
+
       var postingsData = window.data.postings;
 
       // Reference to filters
@@ -23,13 +28,13 @@
       // Adds priceRange property to postings elements
       var addPriceRange = function (element) {
         var priceRange;
-        if (element.offer.price < window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) {
+        if (element.offer.price < PRICE_THRESHOLD.lowToMiddle) {
           priceRange = 'low';
         }
-        if ((element.offer.price >= window.sharedVariables.PRICE_THRESHOLD.lowToMiddle) && (element.offer.price <= window.sharedVariables.PRICE_THRESHOLD.middleToHigh)) {
+        if ((element.offer.price >= PRICE_THRESHOLD.lowToMiddle) && (element.offer.price <= PRICE_THRESHOLD.middleToHigh)) {
           priceRange = 'middle';
         }
-        if (element.offer.price > window.sharedVariables.PRICE_THRESHOLD.middleToHigh) {
+        if (element.offer.price > PRICE_THRESHOLD.middleToHigh) {
           priceRange = 'high';
         }
 
@@ -37,9 +42,12 @@
         return element;
       };
 
-      // Adds price range property
-      postingsData.forEach(addPriceRange);
-
+      try {
+        // Adds price range property
+        postingsData.forEach(addPriceRange);
+      } catch (error) {
+        // User message provided from data.js module
+      }
 
       var showFiltered = function () {
         // Remove elements currently rendered
