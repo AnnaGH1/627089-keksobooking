@@ -26,11 +26,11 @@
   var adTitle = window.sharedVariables.adForm.elements.title;
   adTitle.addEventListener('invalid', function () {
     if (adTitle.validity.tooShort) {
-      adTitle.setCustomValidity('Минимальная длина заголовка 30 символов');
+      adTitle.setCustomValidity('Title must be at least 30 characters long');
     } else if (adTitle.validity.tooLong) {
-      adTitle.setCustomValidity('Максимальная длина заголовка 100 символов');
+      adTitle.setCustomValidity('Title can be at most 100 characters long');
     } else if (adTitle.validity.valueMissing) {
-      adTitle.setCustomValidity('Обязательное поле');
+      adTitle.setCustomValidity('Required field');
     } else {
       adTitle.setCustomValidity('');
     }
@@ -41,7 +41,7 @@
   var propertyType = window.sharedVariables.adForm.elements.type;
   adPrice.addEventListener('invalid', function () {
     if (adPrice.validity.rangeOverflow) {
-      adPrice.setCustomValidity('Максимальная цена 1 000 000');
+      adPrice.setCustomValidity('Max price 1 000 000');
     } else {
       adPrice.setCustomValidity('');
     }
@@ -87,13 +87,13 @@
   // Event Handler on rooms and guests capacity change
   var onCapacityChange = function () {
     if (roomsCapacity.value === ROOMS_NUMBER.oneRoom && guestsCapacity.value !== GUESTS_NUMBER.oneGuest) {
-      guestsCapacity.setCustomValidity('Не больше 1 гостя');
+      guestsCapacity.setCustomValidity('1 guest max');
     } else if ((roomsCapacity.value === ROOMS_NUMBER.twoRooms && guestsCapacity.value === GUESTS_NUMBER.threeGuests) || (roomsCapacity.value === ROOMS_NUMBER.twoRooms && guestsCapacity.value === GUESTS_NUMBER.noGuests)) {
-      guestsCapacity.setCustomValidity('Не больше 2 гостей');
+      guestsCapacity.setCustomValidity('2 guests max');
     } else if (roomsCapacity.value === ROOMS_NUMBER.threeRooms && guestsCapacity.value === GUESTS_NUMBER.noGuests) {
-      guestsCapacity.setCustomValidity('Не больше 3 гостей');
+      guestsCapacity.setCustomValidity('3 guests max');
     } else if (roomsCapacity.value === ROOMS_NUMBER.hundredRooms && guestsCapacity.value !== GUESTS_NUMBER.noGuests) {
-      guestsCapacity.setCustomValidity('Не для гостей');
+      guestsCapacity.setCustomValidity('Not for guests');
     } else {
       guestsCapacity.setCustomValidity('');
     }
